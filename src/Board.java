@@ -5,16 +5,16 @@ public class Board
 	private Position x_Pos;
 	private Position o_Pos;
 	
-	public Board()
+	public Board(Position com, Position opp)
 	{
 		board = new char[8][8];
 		for(int i = 0; i < board.length; i++)
 			for(int j = 0; j < board[i].length; j++)
 				board[i][j] = '-';
-		board[0][0] = 'X';
-		board[7][7] = 'O';
-		x_Pos = new Position("A1");
-		o_Pos = new Position("H8");
+		x_Pos = com; // Computer is always X
+		o_Pos = opp; // Opponent is always O
+		board[x_Pos.getY()][x_Pos.getX()] = 'X';
+		board[o_Pos.getY()][o_Pos.getX()] = 'O';
 	}
 	
 	
@@ -110,8 +110,10 @@ public class Board
 	
 	public void print()
 	{
+		System.out.println("  1 2 3 4 5 6 7 8");
 		for(int i = 0; i < board.length; i++)
 		{
+			System.out.print(String.valueOf((char)(i + 65)) + " ");
 			for(int j = 0; j < board[i].length; j++)
 			{
 				System.out.print(board[i][j] + " ");
