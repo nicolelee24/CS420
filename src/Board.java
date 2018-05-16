@@ -20,7 +20,7 @@ public class Board
 	//Takes in the new and old positions and makes sure the piece can be moved
 	//Moves the piece if it is able to be moved
 	//Returns true if piece is moved or false if it is not moved
-	public boolean movePiece(Position oldPos, Position newPos)
+	public boolean canMoveTo(Position oldPos, Position newPos)
 	{
 		//The positions are the same don't move the piece
 		if(oldPos.equals(newPos))
@@ -44,9 +44,6 @@ public class Board
 					//If the spot has been or is occupied, return false
 					if(board[y][oldPos.getX()] != '-')
 						return false;
-				//Move piece
-				board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
-				board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
 			}
 			//The piece is moving up
 			else
@@ -56,9 +53,6 @@ public class Board
 					//If the spot has been or is occupied, return false
 					if(board[y][oldPos.getX()] != '-')
 						return false;
-				//Move piece
-				board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
-				board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
 			}
 		}
 		//The piece is moving along the same row
@@ -71,9 +65,6 @@ public class Board
 				for(int x = oldPos.getX() + 1; x <= newPos.getX(); x++)
 					if(board[oldPos.getY()][x] != '-')
 						return false;
-				//Move piece
-				board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
-				board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
 			}
 			//The piece is moving left
 			else
@@ -82,9 +73,6 @@ public class Board
 				for(int x = oldPos.getX() - 1; x >= newPos.getX(); x--)
 					if(board[oldPos.getY()][x] != '-')
 						return false;
-				//Move piece
-				board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
-				board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
 			}
 		}
 		//The piece is moving along the diagonal
@@ -124,15 +112,19 @@ public class Board
 					if(board[yCounter--][x] != '-')
 						return false;
 			}
-			//Move piece
-			board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
-			board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
 		}
 		//Not a valid move
 		else
 			return false;
-		//Piece was moved so return true
+		//Piece is able to be moved so return true
 		return true;
+	}
+	
+	public void movePiece(Position oldPos, Position newPos)
+	{
+		//Move piece
+		board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
+		board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
 	}
 	
 	public void print()

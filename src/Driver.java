@@ -2,11 +2,14 @@ import java.util.Scanner;
 
 public class Driver
 {
+	private static final Scanner keyboard = new Scanner(System.in);
+	private static Board board;
+	
 	public static void main(String[] args)
 	{
-		char first = ' ';
-		double timeLimit = 0;
-		Scanner keyboard = new Scanner(System.in);
+		char first = ' ';	//Holds who is going first
+		double timeLimit = 0;	//Holds the time limit for each turn
+		char winner = ' ';	//Indicates who the winner is
 		
 		//Get the time limit for each move
 		while(timeLimit <= 0)
@@ -41,26 +44,21 @@ public class Driver
 		Position comPos;	//Position of the computer
 		Position oppPos;	//Position of the opponent
 		
-		// TODO: I don't think we need current if we have 'first' already
-		Position current;	//The position of the current player
-		
 		//Set the positions to the correct spots
 		//Make the com top left if they go first
 		if(first == 'c')
 		{
 			comPos = new Position("A1");
 			oppPos = new Position("H8");
-			current = comPos;
 		}
 		//Otherwise make the opp top left
 		else
 		{
 			oppPos = new Position("A1");
 			comPos = new Position("H8");
-			current = oppPos;
 		}
 		
-		Board board = new Board(comPos, oppPos);
+		board = new Board(comPos, oppPos);
 		char turn = first;	//Who's turn it is
 		board.print();
 		
@@ -70,9 +68,7 @@ public class Driver
 		//	This would be where I intended the game loop to go
 		//
 		///////////////////////////////////////////////////////
-		
-		// Some valid moves arn't working, change "G6" to "E7" or "F1"
-		// The logic in 'movePiece' might be off, I'm still trying to understand it
+		/*
 		String[] positions = {"A4", "F6", "D1", "F1", "D8"};
 		for (int i = 0; i < 5; i++) {
 			Position newPos = new Position(positions[i]);
@@ -99,39 +95,108 @@ public class Driver
 				turn = 'c';
 			}
 		}
-		/*
-		if(board.movePiece(current, new Position("A4")))
-		{
-			System.out.println("Move made");
-			current = new Position("A4");
-		}
-		else
-		{
-			System.out.println("Move not made");
-		}
-		board.print();
-		if(board.movePiece(current, new Position("A5")))
-		{
-			System.out.println("Move made");
-			current = new Position("A5");
-		}
-		else
-		{
-			System.out.println("Move not made");
-		}
-		board.print();
-		if(board.movePiece(current, new Position("A3")))
-		{
-			System.out.println("Move made");
-			current = new Position("A3");
-		}
-		else
-		{
-			System.out.println("Move not made");
-		}
-		board.print();
 		*/
+		
+		//Continue until there is a winner
+		while(winner == ' ')
+		{
+			Position newPos;
+			//Computer's turn
+			if (turn == 'c') 
+			{
+				if(canMove(comPos))
+				{
+					newPos = getNewComPos();
+					if(board.canMoveTo(comPos, newPos))
+					{
+						board.movePiece(comPos, newPos);
+						System.out.println("Move made");
+						comPos = newPos;
+					turn = 'o';
+					}
+					else
+					{
+						System.out.println("Move not made");
+					}
+					board.print();
+				}
+				else
+				{
+					winner = 'o';
+				}
+			}
+			// opponent's turn to move
+			else
+			{
+				if(canMove(oppPos))
+				{
+					newPos = getNewOppPos("opponent's");
+					if(board.canMoveTo(oppPos, newPos))
+					{
+						board.movePiece(oppPos, newPos);
+						System.out.println("Move made");
+						oppPos = newPos;
+					turn = 'c';
+					}
+					else
+					{
+						System.out.println("Move not made");
+					}
+					board.print();
+				}
+				else
+				{
+					winner = 'c';
+				}
+			}
+		}
+		
+		if(winner == 'c')
+			System.out.println("The computer wins!");
+		else
+			System.out.println("The opponent wins!");
+		
 		keyboard.close();
 	}
 	
+	
+	private static Position getNewComPos()
+	{
+		return getNewOppPos("computer's");
+	}
+	
+	private static Position getNewOppPos(String player)
+	{
+		String oppMove = "";
+		Position newPos = new Position("");
+		boolean onBoard = false;	//Flag to indicate if user's response is on the board
+		while(!onBoard)
+		{
+			System.out.print("Enter " + player + " move: ");
+			oppMove = keyboard.nextLine();
+			newPos = new Position(oppMove);
+			if(newPos.getX() < 0 || newPos.getX() > 7 || newPos.getY() < 0 || newPos.getY() > 7)
+				onBoard = false;
+			else
+				onBoard = true;
+		}
+		return newPos;
+	}
+	
+	private static boolean canMove(Position pos)
+	{
+		for(int y = pos.getY() - 1; y <= pos.getY() + 1; y++)
+		{
+			for(int x = pos.getX() - 1; x <= pos.getX() + 1; x++)
+			{
+				try
+				{
+					if(board.getBoard()[y][x] == '-')
+						return true;
+				}catch(Exception e)
+				{}
+			}
+		}
+		return false;
+	}
 }
