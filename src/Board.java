@@ -17,94 +17,121 @@ public class Board
 		board[o_Pos.getY()][o_Pos.getX()] = 'O';
 	}
 	
-	
-	//////////////////////////////////////////////////////////////
-	//
-	//	I will come back to this later. I'm sure there is a better
-	//	way, I'm just too tired to think lol.
-	//
-	//////////////////////////////////////////////////////////////
+	//Takes in the new and old positions and makes sure the piece can be moved
+	//Moves the piece if it is able to be moved
+	//Returns true if piece is moved or false if it is not moved
 	public boolean movePiece(Position oldPos, Position newPos)
 	{
-		int leftX;
-		int leftY;
-		int rightX;
-		int rightY;
-		if(oldPos.getX() < newPos.getX())
-		{
-			leftX = oldPos.getX();
-			leftY = oldPos.getY();
-			rightX = newPos.getX();
-			rightY = newPos.getY();
-		}
-		else
-		{
-			rightX = oldPos.getX();
-			rightY = oldPos.getY();
-			leftX = newPos.getX();
-			leftY = newPos.getY();
-		}
-		//Tried to move to the same location
+		//The positions are the same don't move the piece
 		if(oldPos.equals(newPos))
 			return false;
-		//Check if the column is clear
-		else if(leftX == rightX)
+		boolean movingRight = false;	//Indicates if the piece is trying to move right
+		boolean movingDown = false;		//Indicates if the piece is trying to move down
+		//The piece is moving right
+		if(oldPos.getX() < newPos.getX())
+			movingRight = true;
+		//The piece is moving down
+		if(oldPos.getY() < newPos.getY())
+			movingDown = true;
+		//The piece is moving along the same column
+		if(oldPos.getX() == newPos.getX())
 		{
-			int startY = (leftY < rightY) ? leftY : rightY;
-			int endY = (leftY > rightY) ? leftY : rightY;
-			for(int i = startY + 1; i <= endY; i++)
-				//If the spot has been or is occupied, return false
-				if(board[i][leftX] != '-')
-					return false;
-			//Move piece
-			board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
-			board[oldPos.getY()][oldPos.getX()] = '#';
-		}
-		//Check if the row is clear
-		else if(leftY == rightY)
-		{
-			int startX = (leftX < rightX) ? leftX : rightX;
-			int endX = (leftX > rightX) ? leftX : rightX;
-			for(int i = startX + 1; i <= endX; i++)
-				//If the spot has been or is occupied, return false
-				if(board[leftY][i] != '-')
-					return false;
-			//Move piece
-			board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
-			board[oldPos.getY()][oldPos.getX()] = '#';
-		}
-		//Check if the diagonal is clear
-		else if(Math.abs((double)(leftY - rightY) / (leftX - rightX)) == 1)
-		{
-			int yCounter = leftY;
-			//Moving up and right
-			if(leftY < rightY)
+			//Piece is moving down
+			if(movingDown)
 			{
-				for(int i = leftX; i < rightX; i++)
-				{
-					if(board[yCounter++][i] != '-')
+				//Make sure column is clear
+				for(int y = oldPos.getY() + 1; y <= newPos.getY(); y++)
+					//If the spot has been or is occupied, return false
+					if(board[y][oldPos.getX()] != '-')
 						return false;
-				}
+				//Move piece
+				board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
+				board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
 			}
-			//Moving down and right
+			//The piece is moving up
 			else
 			{
-				for(int i = leftX; i < rightX; i++)
-				{
-					if(board[yCounter--][i] != '-')
+				//Make sure column is clear
+				for(int y = oldPos.getY() - 1; y >= newPos.getY(); y--)
+					//If the spot has been or is occupied, return false
+					if(board[y][oldPos.getX()] != '-')
 						return false;
-				}
+				//Move piece
+				board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
+				board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
+			}
+		}
+		//The piece is moving along the same row
+		else if(oldPos.getY() == newPos.getY())
+		{
+			//The piece is moving right
+			if(movingRight)
+			{
+				//Make sure row is clear
+				for(int x = oldPos.getX() + 1; x <= newPos.getX(); x++)
+					if(board[oldPos.getY()][x] != '-')
+						return false;
+				//Move piece
+				board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
+				board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
+			}
+			//The piece is moving left
+			else
+			{
+				//Make sure row is clear
+				for(int x = oldPos.getX() - 1; x >= newPos.getX(); x--)
+					if(board[oldPos.getY()][x] != '-')
+						return false;
+				//Move piece
+				board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
+				board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
+			}
+		}
+		//The piece is moving along the diagonal
+		else if(Math.abs((double)(oldPos.getY() - newPos.getY()) / (oldPos.getX() - newPos.getX())) == 1)
+		{
+			int yCounter = oldPos.getY();	//Keeps track of the y-coordinate
+			//Set the yCounter appropriately
+			if(movingDown)
+				yCounter++;
+			else
+				yCounter--;
+			//Moving right and down
+			if(movingRight && movingDown)
+			{
+				for(int x = oldPos.getX() + 1; x <= newPos.getX(); x++)
+					if(board[yCounter++][x] != '-')
+						return false;
+			}
+			//Moving right and up
+			else if(movingRight && !movingDown)
+			{
+				for(int x = oldPos.getX() + 1; x <= newPos.getX(); x++)
+					if(board[yCounter--][x] != '-')
+						return false;
+			}
+			//Moving left and down
+			else if(!movingRight && movingDown)
+			{
+				for(int x = oldPos.getX() - 1; x >= newPos.getX(); x--)
+					if(board[yCounter++][x] != '-')
+						return false;
+			}
+			//Moving left and up
+			else
+			{
+				for(int x = oldPos.getX() - 1; x >= newPos.getX(); x--)
+					if(board[yCounter--][x] != '-')
+						return false;
 			}
 			//Move piece
 			board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
-			board[oldPos.getY()][oldPos.getX()] = '#';
+			board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
 		}
 		//Not a valid move
 		else
-		{
 			return false;
-		}
-		
+		//Piece was moved so return true
 		return true;
 	}
 	

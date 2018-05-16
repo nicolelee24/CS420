@@ -73,7 +73,7 @@ public class Driver
 		
 		// Some valid moves arn't working, change "G6" to "E7" or "F1"
 		// The logic in 'movePiece' might be off, I'm still trying to understand it
-		String[] positions = {"A4", "F6", "D1", "G6", "D8"};
+		String[] positions = {"A4", "F6", "D1", "F1", "D8"};
 		for (int i = 0; i < 5; i++) {
 			Position newPos = new Position(positions[i]);
 			
