@@ -1,9 +1,12 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Driver
 {
 	private static final Scanner keyboard = new Scanner(System.in);
 	private static Board board;
+	private static ArrayList<String> comMoves = new ArrayList<String>();	//Keeps track of the computer's moves
+	private static ArrayList<String> oppMoves = new ArrayList<String>();	//Keeps track of the opponenet's moves
 	
 	public static void main(String[] args)
 	{
@@ -60,7 +63,7 @@ public class Driver
 		
 		board = new Board(comPos, oppPos);
 		char turn = first;	//Who's turn it is
-		board.print();
+		board.print(comMoves, oppMoves);
 		
 		///////////////////////////////////////////////////////
 		//
@@ -104,22 +107,26 @@ public class Driver
 			//Computer's turn
 			if (turn == 'c') 
 			{
+				//Make sure the computer has a valid move
 				if(canMove(comPos))
 				{
-					newPos = getNewComPos();
+					newPos = getNewComPos();	//Get the computer's move
+					//Make the move if the move is valid
 					if(board.canMoveTo(comPos, newPos))
 					{
-						board.movePiece(comPos, newPos);
-						System.out.println("Move made");
-						comPos = newPos;
-					turn = 'o';
+						board.movePiece(comPos, newPos);	//Make move
+						System.out.println("Move made " + newPos.toString());
+						comPos = newPos;	//Update the computer's position
+						turn = 'o';	//It's the opponents turn
+						comMoves.add(newPos.toString());	//Add the move to the computer's list of moves
 					}
 					else
 					{
-						System.out.println("Move not made");
+						System.out.println("Move not made " + newPos.toString());
 					}
-					board.print();
+					board.print(comMoves, oppMoves);
 				}
+				//The computer has no valid moves so the opponent wins
 				else
 				{
 					winner = 'o';
@@ -128,22 +135,26 @@ public class Driver
 			// opponent's turn to move
 			else
 			{
+				//Make sure the opponent has a valid move
 				if(canMove(oppPos))
 				{
-					newPos = getNewOppPos("opponent's");
+					newPos = getNewOppPos("opponent's");	//Get the opponent's move
+					//Make the move if the move is valid
 					if(board.canMoveTo(oppPos, newPos))
 					{
-						board.movePiece(oppPos, newPos);
-						System.out.println("Move made");
-						oppPos = newPos;
-					turn = 'c';
+						board.movePiece(oppPos, newPos);	//Make move
+						System.out.println("Move made " + newPos.toString());
+						oppPos = newPos;	//Update the opponent's position
+						turn = 'c';	//It's the computer's turn next
+						oppMoves.add(newPos.toString());	//Add the move to the opponent's list of moves
 					}
 					else
 					{
-						System.out.println("Move not made");
+						System.out.println("Move not made " + newPos.toString());
 					}
-					board.print();
+					board.print(comMoves, oppMoves);
 				}
+				//The opponent has no valid moves so the computer wins
 				else
 				{
 					winner = 'c';
@@ -151,6 +162,7 @@ public class Driver
 			}
 		}
 		
+		//Print out who won
 		if(winner == 'c')
 			System.out.println("The computer wins!");
 		else

@@ -35,6 +35,14 @@ public class Position
 			return true;
 		return false;
 	}
+	
+	public String toString()
+	{
+		String pos = "";
+		pos += (char)('A' + y);
+		pos += (char)('1' + x);
+		return pos;
+	}
 
 	/////////////////////////
 	// Getters and Setters //

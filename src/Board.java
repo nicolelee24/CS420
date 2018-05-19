@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class Board
 {
@@ -127,17 +128,50 @@ public class Board
 		board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
 	}
 	
-	public void print()
+	public void print(ArrayList<String> comMoves, ArrayList<String> oppMoves)
 	{
-		System.out.println("  1 2 3 4 5 6 7 8");
-		for(int i = 0; i < board.length; i++)
+		int i = 0;	//Keep track of what row we are on
+		System.out.println("  1 2 3 4 5 6 7 8\tComputer vs. Opponent");
+		//Print the board and each move so far
+		for(; i < board.length; i++)
 		{
-			System.out.print(String.valueOf((char)(i + 65)) + " ");
+			System.out.print(String.valueOf((char)(i + 65)) + " ");	//Print the row number
 			for(int j = 0; j < board[i].length; j++)
 			{
-				System.out.print(board[i][j] + " ");
+				System.out.print(board[i][j] + " ");	//Print the value of the board at the current position
+			}
+			//If there either player has made i+1 number of moves, print them out
+			if(comMoves.size() > i || oppMoves.size() > i)
+			{
+				System.out.print("    " + (i + 1) + ".   ");	//Print what move number it was
+				if(comMoves.size() > i)
+					System.out.print(comMoves.get(i));	//Print com's move
+				else
+					System.out.print("  ");	//Just print a blank
+				System.out.print("\t\t");
+				if(oppMoves.size() > i)
+					System.out.print(oppMoves.get(i));	//Print opp's move
 			}
 			System.out.println("");
+		}
+		//Continue to print the moves after the board has been printed
+		while(comMoves.size() > i || oppMoves.size() > i)
+		{
+			//Just for proper spacing 
+			if(i == 8)
+				System.out.print("\t\t      ");
+			else
+				System.out.print("\t\t     ");
+			System.out.print((i + 1) + ".   ");	//Print out what move number it is
+			if(comMoves.size() > i)
+				System.out.print(comMoves.get(i));	//Print out com's move
+			else
+				System.out.print("  ");	//print out a blank space
+			System.out.print("\t\t");
+			if(oppMoves.size() > i)
+				System.out.print(oppMoves.get(i));	//Print out opp's move
+			System.out.println("");
+			i++;
 		}
 		System.out.println("\n");
 	}
