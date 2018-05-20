@@ -18,6 +18,85 @@ public class Board
 		board[o_Pos.getY()][o_Pos.getX()] = 'O';
 	}
 	
+	// Method to generate all possible moves for a give position
+	public ArrayList<Position> generatePossibleMoves(Position pos) {
+		ArrayList<Position> moves = new ArrayList<Position>();
+		
+		// Going Up
+		for (int i = pos.getY() - 1; i > -1; i--) {
+			if (board[i][pos.getX()] == '-') {
+				Position p = new Position(pos.getX(), i);
+				moves.add(p);
+			} else {
+				break;
+			}
+		}
+		// Going Down
+		for (int i = pos.getY() + 1; i < board.length; i++) {
+			if (board[i][pos.getX()] == '-') {
+				Position p = new Position(pos.getX(), i);
+				moves.add(p);
+			} else {
+				break;
+			}
+		}
+		// Going Left
+		for (int i = pos.getX() - 1; i > -1; i--) {
+			if (board[pos.getY()][i] == '-') {
+				Position p = new Position(i, pos.getY());
+				moves.add(p);
+			} else {
+				break;
+			}
+		}
+		// Going Right
+		for (int i = pos.getX() + 1; i < board.length; i++) {
+			if (board[pos.getY()][i] == '-') {
+				Position p = new Position(i, pos.getY());
+				moves.add(p);
+			} else {
+				break;
+			}
+		}
+		// Going Up/Left Diagonal
+		for (int i = pos.getX() - 1, j = pos.getY() - 1; i > -1 && j > -1; i--, j--) {
+			if (board[j][i] == '-') {
+				Position p = new Position(i, j);
+				moves.add(p);
+			} else {
+				break;
+			}
+		}
+		// Going Up/Right Diagonal
+		for (int i = pos.getX() + 1, j = pos.getY() - 1; i < board.length && j > -1; i++, j--) {
+			if (board[j][i] == '-') {
+				Position p = new Position(i, j);
+				moves.add(p);
+			} else {
+				break;
+			}
+		}
+		// Going Down/Left Diagonal
+		for (int i = pos.getX() - 1, j = pos.getY() + 1; i > -1 && j < board.length; i--, j++) {
+			if (board[j][i] == '-') {
+				Position p = new Position(i, j);
+				moves.add(p);
+			} else {
+				break;
+			}
+		}
+		// Going Down/Right Diagonal
+		for (int i = pos.getX() + 1, j = pos.getY() + 1; i < board.length && j < board.length; i++, j++) {
+			if (board[j][i] == '-') {
+				Position p = new Position(i, j);
+				moves.add(p);
+			} else {
+				break;
+			}
+		}	
+		return moves;
+	}
+	
 	//Takes in the new and old positions and makes sure the piece can be moved
 	//Moves the piece if it is able to be moved
 	//Returns true if piece is moved or false if it is not moved
@@ -126,6 +205,24 @@ public class Board
 		//Move piece
 		board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
 		board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
+	}
+	
+	// Function to make sure the player can make a move
+	public boolean canMove(Position pos)
+	{
+		for(int y = pos.getY() - 1; y <= pos.getY() + 1; y++)
+		{
+			for(int x = pos.getX() - 1; x <= pos.getX() + 1; x++)
+			{
+				try
+				{
+					if(board[y][x] == '-')
+						return true;
+				}catch(Exception e)
+				{}
+			}
+		}
+		return false;
 	}
 	
 	public void print(ArrayList<String> comMoves, ArrayList<String> oppMoves)

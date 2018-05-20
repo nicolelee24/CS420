@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Driver
@@ -7,6 +8,7 @@ public class Driver
 	private static Board board;
 	private static ArrayList<String> comMoves = new ArrayList<String>();	//Keeps track of the computer's moves
 	private static ArrayList<String> oppMoves = new ArrayList<String>();	//Keeps track of the opponenet's moves
+	private static Random rand = new Random();
 	
 	public static void main(String[] args)
 	{
@@ -71,34 +73,6 @@ public class Driver
 		//	This would be where I intended the game loop to go
 		//
 		///////////////////////////////////////////////////////
-		/*
-		String[] positions = {"A4", "F6", "D1", "F1", "D8"};
-		for (int i = 0; i < 5; i++) {
-			Position newPos = new Position(positions[i]);
-			
-			// computer's turn to move
-			if (turn == 'c') {
-				if(board.movePiece(comPos, newPos)) {
-					System.out.println("Move made: " + positions[i]);
-					comPos = newPos;
-				} else {
-					System.out.println("Move not made: "+ positions[i]);
-				}
-				board.print();
-				turn = 'o';
-			} else {
-				// opponent's turn to move
-				if(board.movePiece(oppPos, newPos)) {
-					System.out.println("Move made: " + positions[i]);
-					oppPos = newPos;
-				} else {
-					System.out.println("Move not made: " + positions[i]);
-				}
-				board.print();
-				turn = 'c';
-			}
-		}
-		*/
 		
 		//Continue until there is a winner
 		while(winner == ' ')
@@ -108,14 +82,14 @@ public class Driver
 			if (turn == 'c') 
 			{
 				//Make sure the computer has a valid move
-				if(canMove(comPos))
+				if(board.canMove(comPos))
 				{
-					newPos = getNewComPos();	//Get the computer's move
+					newPos = getNewComPos(comPos);	//Get the computer's move
 					//Make the move if the move is valid
 					if(board.canMoveTo(comPos, newPos))
 					{
 						board.movePiece(comPos, newPos);	//Make move
-						System.out.println("Move made " + newPos.toString());
+						System.out.println("Computer's move is: " + newPos.toString());
 						comPos = newPos;	//Update the computer's position
 						turn = 'o';	//It's the opponents turn
 						comMoves.add(newPos.toString());	//Add the move to the computer's list of moves
@@ -136,7 +110,7 @@ public class Driver
 			else
 			{
 				//Make sure the opponent has a valid move
-				if(canMove(oppPos))
+				if(board.canMove(oppPos))
 				{
 					newPos = getNewOppPos("opponent's");	//Get the opponent's move
 					//Make the move if the move is valid
@@ -171,10 +145,17 @@ public class Driver
 		keyboard.close();
 	}
 	
-	
-	private static Position getNewComPos()
-	{
-		return getNewOppPos("computer's");
+	// Computer gets to make a random move
+	private static Position getNewComPos(Position comPos)
+	{	
+		/*Position newPos = new Position(rand.nextInt(8), rand.nextInt(8));
+		while(!board.canMoveTo(comPos, newPos)) {
+			newPos.update(rand.nextInt(8), rand.nextInt(8));
+		}
+		*/
+		ArrayList<Position> moves = board.generatePossibleMoves(comPos);
+		Position newPos = moves.get(rand.nextInt(moves.size()));
+		return newPos;
 	}
 	
 	private static Position getNewOppPos(String player)
@@ -195,7 +176,7 @@ public class Driver
 		return newPos;
 	}
 	
-	private static boolean canMove(Position pos)
+/*	private static boolean canMove(Position pos)
 	{
 		for(int y = pos.getY() - 1; y <= pos.getY() + 1; y++)
 		{
@@ -210,5 +191,5 @@ public class Driver
 			}
 		}
 		return false;
-	}
+	}*/
 }

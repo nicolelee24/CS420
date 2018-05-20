@@ -25,8 +25,18 @@ public class Position
 		else
 		{
 			x = -1;
-			x = -1;
+			y = -1;
 		}
+	}
+	
+	public Position(int i, int j) {
+		x = i;
+		y = j;
+	}
+	
+	public void update(int i, int j) {
+		x = i;
+		y = j;
 	}
 	
 	public boolean equals(Position other)
