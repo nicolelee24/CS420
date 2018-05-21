@@ -148,15 +148,19 @@ public class Driver
 	// Computer gets to make a random move
 	private static Position getNewComPos(Position comPos)
 	{	
-		/*Position newPos = new Position(rand.nextInt(8), rand.nextInt(8));
-		while(!board.canMoveTo(comPos, newPos)) {
-			newPos.update(rand.nextInt(8), rand.nextInt(8));
-		}
-		*/
 		ArrayList<Position> moves = board.generatePossibleMoves(comPos);
 		moves.sort(null);	//Sort the positions so they are in order (Probably will change to a priority queue later)
 		//Get the first element
 		Position newPos = moves.get(0);//moves.get(rand.nextInt(moves.size()));
+		ArrayList<Position> bestMoves = new ArrayList<Position>();
+		for(int i = 0; i < moves.size(); i++)
+		{
+			if(moves.get(i).getMoveValue() == newPos.getMoveValue())
+				bestMoves.add(moves.get(i));
+			else
+				break;
+		}
+		newPos = bestMoves.get(rand.nextInt(bestMoves.size()));
 		return newPos;
 	}
 	

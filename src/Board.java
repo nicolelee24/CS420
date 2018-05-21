@@ -60,11 +60,16 @@ public class Board
 			//Update down/right
 			for(int i = x + 1, j = y + 1; i < board.length && j < board.length; i++, j++)
 			{
-				if(board[j][i] != '#')
+				if(board[j][i] == '-')
 					moveValues[j][i] -= counter;
-				else
+				else if(board[j][i] == '#')
 				{
 					moveValues[j][i] = -1;
+					break;
+				}
+				else
+				{
+					moveValues[j][i] -= counter;
 					break;
 				}
 			}
@@ -81,11 +86,16 @@ public class Board
 			//Update up/left
 			for(int i = x - 1, j = y - 1; i >= 0 && j >= 0; i--, j--)
 			{
-				if(board[j][i] != '#')
+				if(board[j][i] == '-')
 					moveValues[j][i] -= counter;
-				else
+				else if(board[j][i] == '#')
 				{
 					moveValues[j][i] = -1;
+					break;
+				}
+				else
+				{
+					moveValues[j][i] -= counter;
 					break;
 				}
 			}
@@ -102,11 +112,16 @@ public class Board
 			//Update down
 			for(int j = y + 1; j < board.length; j++)
 			{
-				if(board[j][x] != '#')
+				if(board[j][x] == '-')
 					moveValues[j][x] -= counter;
-				else
+				else if(board[j][x] == '#')
 				{
 					moveValues[j][x] = -1;
+					break;
+				}
+				else
+				{
+					moveValues[j][x] -= counter;
 					break;
 				}
 			}
@@ -123,11 +138,16 @@ public class Board
 			//Update up
 			for(int j = y - 1; j >= 0; j--)
 			{
-				if(board[j][x] != '#')
+				if(board[j][x] == '-')
 					moveValues[j][x] -= counter;
-				else
+				else if(board[j][x] == '#')
 				{
 					moveValues[j][x] = -1;
+					break;
+				}
+				else
+				{
+					moveValues[j][x] -= counter;
 					break;
 				}
 			}
@@ -146,9 +166,14 @@ public class Board
 			{
 				if(board[j][i] == '-')
 					moveValues[j][i] -= counter;
-				else
+				else if(board[j][i] == '#')
 				{
 					moveValues[j][i] = -1;
+					break;
+				}
+				else
+				{
+					moveValues[j][i] -= counter;
 					break;
 				}
 			}
@@ -167,9 +192,14 @@ public class Board
 			{
 				if(board[j][i] == '-')
 					moveValues[j][i] -= counter;
-				else
+				else if(board[j][i] == '#')
 				{
 					moveValues[j][i] = -1;
+					break;
+				}
+				else
+				{
+					moveValues[j][i] -= counter;
 					break;
 				}
 			}
@@ -188,9 +218,14 @@ public class Board
 			{
 				if(board[y][i] == '-')
 					moveValues[y][i] -= counter;
-				else
+				else if(board[y][i] == '#')
 				{
 					moveValues[y][i] = -1;
+					break;
+				}
+				else
+				{
+					moveValues[y][i] -= counter;
 					break;
 				}
 			}
@@ -209,9 +244,14 @@ public class Board
 			{
 				if(board[y][i] == '-')
 					moveValues[y][i] -= counter;
-				else
+				else if(board[y][i] == '#')
 				{
 					moveValues[y][i] = -1;
+					break;
+				}
+				else
+				{
+					moveValues[y][i] -= counter;
 					break;
 				}
 			}
@@ -494,7 +534,7 @@ public class Board
 		board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
 		board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
 		updateMoveValues(newPos);
-		///printMoveValues();
+		//printMoveValues();
 	}
 	
 	// Function to make sure the player can make a move
