@@ -154,7 +154,9 @@ public class Driver
 		}
 		*/
 		ArrayList<Position> moves = board.generatePossibleMoves(comPos);
-		Position newPos = moves.get(rand.nextInt(moves.size()));
+		moves.sort(null);	//Sort the positions so they are in order (Probably will change to a priority queue later)
+		//Get the first element
+		Position newPos = moves.get(0);//moves.get(rand.nextInt(moves.size()));
 		return newPos;
 	}
 	

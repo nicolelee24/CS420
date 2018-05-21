@@ -5,10 +5,11 @@
  * y-coordinates to -1.
  */
 
-public class Position
+public class Position implements Comparable<Position>
 {
 	private int x;	//X-coordinate
 	private int y;	//Y-coordinate
+	private int moveValue;	//The number of moves at the current position
 	
 	//Constructor
 	//Takes a string and sets the x- and y-coordinates accordingly
@@ -27,11 +28,13 @@ public class Position
 			x = -1;
 			y = -1;
 		}
+		moveValue = -1;
 	}
 	
-	public Position(int i, int j) {
+	public Position(int i, int j, int moveValue) {
 		x = i;
 		y = j;
+		this.moveValue = moveValue;
 	}
 	
 	public void update(int i, int j) {
@@ -54,6 +57,16 @@ public class Position
 		return pos;
 	}
 
+	@Override
+	public int compareTo(Position other)
+	{
+		if(this.moveValue < other.moveValue)
+			return 1;
+		if(this.moveValue > other.moveValue)
+			return -1;
+		return 0;
+	}
+
 	/////////////////////////
 	// Getters and Setters //
 	/////////////////////////
@@ -65,11 +78,19 @@ public class Position
 		return y;
 	}
 
+	public int getMoveValue() {
+		return moveValue;
+	}
+
 	public void setX(int x) {
 		this.x = x;
 	}
 
 	public void setY(int y) {
 		this.y = y;
+	}
+
+	public void setMoveValue(int moveValue) {
+		this.moveValue = moveValue;
 	}
 }

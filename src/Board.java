@@ -3,12 +3,14 @@ import java.util.ArrayList;
 public class Board
 {
 	private char[][] board;
+	private int[][] moveValues;
 	private Position x_Pos;
 	private Position o_Pos;
 	
 	public Board(Position com, Position opp)
 	{
 		board = new char[8][8];
+		moveValues = new int[8][8];
 		for(int i = 0; i < board.length; i++)
 			for(int j = 0; j < board[i].length; j++)
 				board[i][j] = '-';
@@ -16,6 +18,111 @@ public class Board
 		o_Pos = opp; // Opponent is always O
 		board[x_Pos.getY()][x_Pos.getX()] = 'X';
 		board[o_Pos.getY()][o_Pos.getX()] = 'O';
+		updateMoveValues();
+		//printMoveValues();
+	}
+	
+	//Update the number of moves at each position
+	private void updateMoveValues()
+	{
+		for(int i = 0; i < board.length; i++)
+			for(int j = 0; j < board[i].length; j++)
+			{
+				//If the position has been visited in the past, set it to -1
+				if(board[j][i] == '#')
+					moveValues[j][i] = -1;
+				//Otherwise calculate the number of moves
+				else
+					moveValues[j][i] = countMoves(i, j);
+			}
+	}
+	
+	//Print the moveValues array. This was for testing only
+	private void printMoveValues()
+	{
+		System.out.println("\n   1  2  3  4  5  6  7  8");
+		//Print the board and each move so far
+		for(int i = 0; i < board.length; i++)
+		{
+			System.out.print(String.valueOf((char)(i + 65)) + " ");	//Print the row number
+			for(int j = 0; j < moveValues[i].length; j++)
+			{
+				System.out.print(moveValues[i][j] + " ");	//Print the value of the board at the current position
+			}
+			
+			System.out.println("");
+		}
+	}
+	
+	//Count the number of moves at the current position
+	private int countMoves(int x, int y)
+	{
+		int numMoves = 0;
+		//Count left
+		for(int i = x - 1; i >= 0; i--)
+		{
+			if(board[y][i] == '-')
+				numMoves++;
+			else
+				break;
+		}
+		//Count right
+		for(int i = x + 1; i < board.length; i++)
+		{
+			if(board[y][i] == '-')
+				numMoves++;
+			else
+				break;
+		}
+		//Count up
+		for(int i = y - 1; i >= 0; i--)
+		{
+			if(board[i][x] == '-')
+				numMoves++;
+			else
+				break;
+		}
+		//Count down
+		for(int i = y + 1; i < board.length; i++)
+		{
+			if(board[i][x] == '-')
+				numMoves++;
+			else
+				break;
+		}
+		//Count up/left
+		for(int i = x - 1, j = y - 1; i >= 0 && j >= 0; i--, j--)
+		{
+			if(board[j][i] == '-')
+				numMoves++;
+			else
+				break;
+		}
+		//Count up/right
+		for(int i = x + 1, j = y - 1; i < board.length && j >= 0; i++, j--)
+		{
+			if(board[j][i] == '-')
+				numMoves++;
+			else
+				break;
+		}
+		//Count down/left
+		for(int i = x - 1, j = y + 1; i >= 0 && j < board.length; i--, j++)
+		{
+			if(board[j][i] == '-')
+				numMoves++;
+			else
+				break;
+		}
+		//Count up/left
+		for(int i = x + 1, j = y + 1; i < board.length && j < board.length; i++, j++)
+		{
+			if(board[j][i] == '-')
+				numMoves++;
+			else
+				break;
+		}
+		return numMoves;
 	}
 	
 	// Method to generate all possible moves for a give position
@@ -25,7 +132,7 @@ public class Board
 		// Going Up
 		for (int i = pos.getY() - 1; i > -1; i--) {
 			if (board[i][pos.getX()] == '-') {
-				Position p = new Position(pos.getX(), i);
+				Position p = new Position(pos.getX(), i, moveValues[i][pos.getX()]);
 				moves.add(p);
 			} else {
 				break;
@@ -34,7 +141,7 @@ public class Board
 		// Going Down
 		for (int i = pos.getY() + 1; i < board.length; i++) {
 			if (board[i][pos.getX()] == '-') {
-				Position p = new Position(pos.getX(), i);
+				Position p = new Position(pos.getX(), i, moveValues[i][pos.getX()]);
 				moves.add(p);
 			} else {
 				break;
@@ -43,7 +150,7 @@ public class Board
 		// Going Left
 		for (int i = pos.getX() - 1; i > -1; i--) {
 			if (board[pos.getY()][i] == '-') {
-				Position p = new Position(i, pos.getY());
+				Position p = new Position(i, pos.getY(), moveValues[pos.getY()][i]);
 				moves.add(p);
 			} else {
 				break;
@@ -52,7 +159,7 @@ public class Board
 		// Going Right
 		for (int i = pos.getX() + 1; i < board.length; i++) {
 			if (board[pos.getY()][i] == '-') {
-				Position p = new Position(i, pos.getY());
+				Position p = new Position(i, pos.getY(), moveValues[pos.getY()][i]);
 				moves.add(p);
 			} else {
 				break;
@@ -61,7 +168,7 @@ public class Board
 		// Going Up/Left Diagonal
 		for (int i = pos.getX() - 1, j = pos.getY() - 1; i > -1 && j > -1; i--, j--) {
 			if (board[j][i] == '-') {
-				Position p = new Position(i, j);
+				Position p = new Position(i, j, moveValues[j][i]);
 				moves.add(p);
 			} else {
 				break;
@@ -70,7 +177,7 @@ public class Board
 		// Going Up/Right Diagonal
 		for (int i = pos.getX() + 1, j = pos.getY() - 1; i < board.length && j > -1; i++, j--) {
 			if (board[j][i] == '-') {
-				Position p = new Position(i, j);
+				Position p = new Position(i, j, moveValues[j][i]);
 				moves.add(p);
 			} else {
 				break;
@@ -79,7 +186,7 @@ public class Board
 		// Going Down/Left Diagonal
 		for (int i = pos.getX() - 1, j = pos.getY() + 1; i > -1 && j < board.length; i--, j++) {
 			if (board[j][i] == '-') {
-				Position p = new Position(i, j);
+				Position p = new Position(i, j, moveValues[j][i]);
 				moves.add(p);
 			} else {
 				break;
@@ -88,7 +195,7 @@ public class Board
 		// Going Down/Right Diagonal
 		for (int i = pos.getX() + 1, j = pos.getY() + 1; i < board.length && j < board.length; i++, j++) {
 			if (board[j][i] == '-') {
-				Position p = new Position(i, j);
+				Position p = new Position(i, j, moveValues[j][i]);
 				moves.add(p);
 			} else {
 				break;
@@ -205,6 +312,8 @@ public class Board
 		//Move piece
 		board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
 		board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
+		updateMoveValues();
+		//printMoveValues();
 	}
 	
 	// Function to make sure the player can make a move
@@ -228,7 +337,7 @@ public class Board
 	public void print(ArrayList<String> comMoves, ArrayList<String> oppMoves)
 	{
 		int i = 0;	//Keep track of what row we are on
-		System.out.println("  1 2 3 4 5 6 7 8\tComputer vs. Opponent");
+		System.out.println("\n  1 2 3 4 5 6 7 8\tComputer vs. Opponent");
 		//Print the board and each move so far
 		for(; i < board.length; i++)
 		{
