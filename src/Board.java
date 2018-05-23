@@ -734,7 +734,8 @@ public class Board
 	
 	public int evaluate()
 	{
-		return moveValues[o_Pos.getY()][o_Pos.getX()] - 2 * moveValues[x_Pos.getY()][x_Pos.getX()];
+		//return moveValues[o_Pos.getY()][o_Pos.getX()] - 2 * moveValues[x_Pos.getY()][x_Pos.getX()];
+		return moveValues[x_Pos.getY()][x_Pos.getX()] - 2 * moveValues[o_Pos.getY()][o_Pos.getX()];
 	}
 
 	/////////////////////////

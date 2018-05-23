@@ -11,7 +11,7 @@ public class Driver
 	private static ArrayList<String> comMoves = new ArrayList<String>();	//Keeps track of the computer's moves
 	private static ArrayList<String> oppMoves = new ArrayList<String>();	//Keeps track of the opponenet's moves
 	private static Random rand = new Random();
-	private static double timeLimit;
+	private static long timeLimit;
 	private static int max_depth;
 	private static Position comPos;	//Position of the computer
 	private static Position oppPos;	//Position of the opponent
@@ -29,7 +29,8 @@ public class Driver
 			try
 			{
 				System.out.print("How many seconds for each turn? ");
-				timeLimit = keyboard.nextDouble();
+				timeLimit = keyboard.nextLong();
+				timeLimit *= 1000; // convert time to milliseconds
 				keyboard.nextLine();
 			}catch(Exception e)
 			{
@@ -171,6 +172,7 @@ public class Driver
 	
 	private static Position getNewComPos()
 	{
+		long startTime = System.currentTimeMillis();
 		ArrayList<Position> moves = board.generatePossibleMoves(comPos);
 		moves.sort(null);
 		ArrayList<Position> bestMoves = new ArrayList<Position>();
@@ -179,9 +181,10 @@ public class Driver
 		int a = Integer.MIN_VALUE;	//Alpha
 		int b = Integer.MAX_VALUE;	//Beta
 		//Loop just for testing. This will be one spot the time limit will go instead
-		for(int times = 0; times < 4; times++)
+		//for(int times = 0; times < 4; times++)
+		while((System.currentTimeMillis() - startTime) < timeLimit)
 		{
-			//Move through each vaid move
+			//Move through each valid move
 			for(int i = 0; i < moves.size(); i++)
 			{
 				Position temp = moves.get(i);
