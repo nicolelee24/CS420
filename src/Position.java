@@ -37,6 +37,13 @@ public class Position implements Comparable<Position>
 		this.moveValue = moveValue;
 	}
 	
+	public Position(Position other)
+	{
+		this.x = other.x;
+		this.y = other.y;
+		this.moveValue = other.moveValue;
+	}
+	
 	public void update(int i, int j) {
 		x = i;
 		y = j;

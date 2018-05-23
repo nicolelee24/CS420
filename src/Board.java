@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 public class Board
 {
@@ -19,15 +20,8 @@ public class Board
 		board[x_Pos.getY()][x_Pos.getX()] = 'X';
 		board[o_Pos.getY()][o_Pos.getX()] = 'O';
 		updateMoveValues(null);
-		//printMoveValues();
+		printMoveValues();
 	}
-	
-	/////////////////////////////////////////////////////////
-	//
-	//	Needs Checking. Computer did not choose correct spot
-	//	late in the game. Not sure if updating properly
-	//
-	/////////////////////////////////////////////////////////
 	
 	//Update the number of moves at each position
 	private void updateMoveValues(Position pos)
@@ -35,14 +29,7 @@ public class Board
 		if(pos == null)
 			for(int i = 0; i < board.length; i++)
 				for(int j = 0; j < board[i].length; j++)
-				{
-					//If the position has been visited in the past, set it to -1
-					if(board[j][i] == '#')
-						moveValues[j][i] = -1;
-					//Otherwise calculate the number of moves
-					else
 						moveValues[j][i] = countMoves(i, j);
-				}
 		else
 		{
 			int counter = 1;
@@ -62,11 +49,6 @@ public class Board
 			{
 				if(board[j][i] == '-')
 					moveValues[j][i] -= counter;
-				else if(board[j][i] == '#')
-				{
-					moveValues[j][i] = -1;
-					break;
-				}
 				else
 				{
 					moveValues[j][i] -= counter;
@@ -88,11 +70,6 @@ public class Board
 			{
 				if(board[j][i] == '-')
 					moveValues[j][i] -= counter;
-				else if(board[j][i] == '#')
-				{
-					moveValues[j][i] = -1;
-					break;
-				}
 				else
 				{
 					moveValues[j][i] -= counter;
@@ -114,11 +91,6 @@ public class Board
 			{
 				if(board[j][x] == '-')
 					moveValues[j][x] -= counter;
-				else if(board[j][x] == '#')
-				{
-					moveValues[j][x] = -1;
-					break;
-				}
 				else
 				{
 					moveValues[j][x] -= counter;
@@ -140,11 +112,6 @@ public class Board
 			{
 				if(board[j][x] == '-')
 					moveValues[j][x] -= counter;
-				else if(board[j][x] == '#')
-				{
-					moveValues[j][x] = -1;
-					break;
-				}
 				else
 				{
 					moveValues[j][x] -= counter;
@@ -166,11 +133,6 @@ public class Board
 			{
 				if(board[j][i] == '-')
 					moveValues[j][i] -= counter;
-				else if(board[j][i] == '#')
-				{
-					moveValues[j][i] = -1;
-					break;
-				}
 				else
 				{
 					moveValues[j][i] -= counter;
@@ -192,11 +154,6 @@ public class Board
 			{
 				if(board[j][i] == '-')
 					moveValues[j][i] -= counter;
-				else if(board[j][i] == '#')
-				{
-					moveValues[j][i] = -1;
-					break;
-				}
 				else
 				{
 					moveValues[j][i] -= counter;
@@ -218,11 +175,6 @@ public class Board
 			{
 				if(board[y][i] == '-')
 					moveValues[y][i] -= counter;
-				else if(board[y][i] == '#')
-				{
-					moveValues[y][i] = -1;
-					break;
-				}
 				else
 				{
 					moveValues[y][i] -= counter;
@@ -244,16 +196,185 @@ public class Board
 			{
 				if(board[y][i] == '-')
 					moveValues[y][i] -= counter;
-				else if(board[y][i] == '#')
-				{
-					moveValues[y][i] = -1;
-					break;
-				}
 				else
 				{
 					moveValues[y][i] -= counter;
 					break;
 				}
+			}
+		}
+	}
+	
+	private void revertMoveValues(Position pos)
+	{
+		int counter = 1;
+		int x = pos.getX();
+		int y = pos.getY();
+		
+		//Check up/left
+		for(int i = x - 1, j = y - 1; i >= 0 && j >= 0; i--, j--)
+		{
+			if(board[j][i] == '-')
+				counter++;
+			else
+				break;
+		}
+		//Update down/right
+		for(int i = x + 1, j = y + 1; i < board.length && j < board.length; i++, j++)
+		{
+			if(board[j][i] == '-')
+				moveValues[j][i] += counter;
+			else
+			{
+				moveValues[j][i] += counter;
+				break;
+			}
+		}
+		
+		counter = 1;	//Reset the counter
+		//Check down/right
+		for(int i = x + 1, j = y + 1; i < board.length && j < board.length; i++, j++)
+		{
+			if(board[j][i] == '-')
+				counter++;
+			else
+				break;
+		}
+		//Update up/left
+		for(int i = x - 1, j = y - 1; i >= 0 && j >= 0; i--, j--)
+		{
+			if(board[j][i] == '-')
+				moveValues[j][i] += counter;
+			else
+			{
+				moveValues[j][i] += counter;
+				break;
+			}
+		}
+		
+		counter = 1;	//Reset the counter
+		//Check up
+		for(int j = y - 1; j >= 0; j--)
+		{
+			if(board[j][x] == '-')
+				counter++;
+			else
+				break;
+		}
+		//Update down
+		for(int j = y + 1; j < board.length; j++)
+		{
+			if(board[j][x] == '-')
+				moveValues[j][x] += counter;
+			else
+			{
+				moveValues[j][x] += counter;
+				break;
+			}
+		}
+		
+		counter = 1;	//Reset the counter
+		//Check down
+		for(int j = y + 1; j < board.length; j++)
+		{
+			if(board[j][x] == '-')
+				counter++;
+			else
+				break;
+		}
+		//Update up
+		for(int j = y - 1; j >= 0; j--)
+		{
+			if(board[j][x] == '-')
+				moveValues[j][x] += counter;
+			else
+			{
+				moveValues[j][x] += counter;
+				break;
+			}
+		}
+		
+		counter = 1;	//Reset the counter
+		//Check up/right
+		for(int i = x + 1, j = y - 1; i < board.length && j >= 0; i++, j--)
+		{
+			if(board[j][i] == '-')
+				counter++;
+			else
+				break;
+		}
+		//Update down/left
+		for(int i = x - 1, j = y + 1; i >= 0 && j < board.length; i--, j++)
+		{
+			if(board[j][i] == '-')
+				moveValues[j][i] += counter;
+			else
+			{
+				moveValues[j][i] += counter;
+				break;
+			}
+		}
+		
+		counter = 1;	//Reset the counter
+		//Check down/left
+		for(int i = x - 1, j = y + 1; i >= 0 && j < board.length; i--, j++)
+		{
+			if(board[j][i] == '-')
+				counter++;
+			else
+				break;
+		}
+		//Update up/right
+		for(int i = x + 1, j = y - 1; i < board.length && j >= 0; i++, j--)
+		{
+			if(board[j][i] == '-')
+				moveValues[j][i] += counter;
+			else
+			{
+				moveValues[j][i] += counter;
+				break;
+			}
+		}
+		
+		counter = 1;	//Reset the counter
+		//Check right
+		for(int i = x + 1; i < board.length; i++)
+		{
+			if(board[y][i] == '-')
+				counter++;
+			else
+				break;
+		}
+		//Update left
+		for(int i = x - 1; i >= 0; i--)
+		{
+			if(board[y][i] == '-')
+				moveValues[y][i] += counter;
+			else
+			{
+				moveValues[y][i] += counter;
+				break;
+			}
+		}
+		
+		counter = 1;	//Reset the counter
+		//Check left
+		for(int i = x - 1; i >= 0; i--)
+		{
+			if(board[y][i] == '-')
+				counter++;
+			else
+				break;
+		}
+		//Update right
+		for(int i = x + 1; i < board.length; i++)
+		{
+			if(board[y][i] == '-')
+				moveValues[y][i] += counter;
+			else
+			{
+				moveValues[y][i] += counter;
+				break;
 			}
 		}
 	}
@@ -534,7 +655,15 @@ public class Board
 		board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
 		board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
 		updateMoveValues(newPos);
-		//printMoveValues();
+		printMoveValues();
+	}
+	
+	public void movePieceBack(Position originalPos, Position currentPos)
+	{
+		revertMoveValues(currentPos);
+		board[originalPos.getY()][originalPos.getX()] = board[currentPos.getY()][currentPos.getX()];
+		board[currentPos.getY()][currentPos.getX()] = '-';
+		printMoveValues();
 	}
 	
 	// Function to make sure the player can make a move
@@ -601,6 +730,11 @@ public class Board
 			i++;
 		}
 		System.out.println("\n");
+	}
+	
+	public int evaluate()
+	{
+		return moveValues[o_Pos.getY()][o_Pos.getX()] - 2 * moveValues[x_Pos.getY()][x_Pos.getX()];
 	}
 
 	/////////////////////////
