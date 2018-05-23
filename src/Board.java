@@ -20,7 +20,7 @@ public class Board
 		board[x_Pos.getY()][x_Pos.getX()] = 'X';
 		board[o_Pos.getY()][o_Pos.getX()] = 'O';
 		updateMoveValues(null);
-		printMoveValues();
+		//printMoveValues();
 	}
 	
 	//Update the number of moves at each position
@@ -655,7 +655,7 @@ public class Board
 		board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
 		board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
 		updateMoveValues(newPos);
-		printMoveValues();
+		//printMoveValues();
 	}
 	
 	public void movePieceBack(Position originalPos, Position currentPos)
@@ -663,7 +663,7 @@ public class Board
 		revertMoveValues(currentPos);
 		board[originalPos.getY()][originalPos.getX()] = board[currentPos.getY()][currentPos.getX()];
 		board[currentPos.getY()][currentPos.getX()] = '-';
-		printMoveValues();
+		//printMoveValues();
 	}
 	
 	// Function to make sure the player can make a move

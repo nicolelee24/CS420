@@ -240,8 +240,23 @@ public class Driver
 	{
 		ArrayList<Position> moves = board.generatePossibleMoves(comPos);
 		moves.sort(null);
+		//Terminal test
+		if(depth == max_depth)
+			return board.evaluate();
 		int maxVal = Integer.MIN_VALUE;
-		return 0;
+		for(int i = 0; i < moves.size(); i++)
+		{
+			Position temp = moves.get(i);
+			Position originalCom = new Position(comPos);	//So we can move back properly
+			board.movePiece(comPos, temp);
+			maxVal = Math.max(maxVal, min(a, b, depth + 1));
+			//Return the piece back to its original position
+			board.movePieceBack(originalCom, temp);
+			if(maxVal >= b)
+				return maxVal;
+			b = Math.max(maxVal, b);
+		}
+		return maxVal;
 	}
 	
 	private static Position getNewOppPos()
@@ -261,21 +276,4 @@ public class Driver
 		}
 		return newPos;
 	}
-	
-/*	private static boolean canMove(Position pos)
-	{
-		for(int y = pos.getY() - 1; y <= pos.getY() + 1; y++)
-		{
-			for(int x = pos.getX() - 1; x <= pos.getX() + 1; x++)
-			{
-				try
-				{
-					if(board.getBoard()[y][x] == '-')
-						return true;
-				}catch(Exception e)
-				{}
-			}
-		}
-		return false;
-	}*/
 }
