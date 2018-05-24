@@ -222,7 +222,7 @@ public class Driver
 		moves.sort(null);
 		//Terminal test
 		if(depth == max_depth)
-			return board.evaluate();
+			return board.evaluate(false);
 		int minVal = Integer.MAX_VALUE;
 		for(int i = 0; i < moves.size(); i++)
 		{
@@ -246,7 +246,7 @@ public class Driver
 		moves.sort(null);
 		//Terminal test
 		if(depth == max_depth)
-			return board.evaluate();
+			return board.evaluate(true);
 		int maxVal = Integer.MIN_VALUE;
 		for(int i = 0; i < moves.size(); i++)
 		{

@@ -740,9 +740,13 @@ public class Board
 		System.out.println("\n");
 	}
 	
-	public int evaluate()
+	public int evaluate(boolean isMax)
 	{
-		return moveValues[x_Pos.getY()][x_Pos.getX()] - 2 * moveValues[o_Pos.getY()][o_Pos.getX()];
+		if (isMax) // for the max
+			return moveValues[x_Pos.getY()][x_Pos.getX()] - (2 * moveValues[o_Pos.getY()][o_Pos.getX()]);
+		
+		// for the min
+		return moveValues[o_Pos.getY()][o_Pos.getX()] - (2 * moveValues[x_Pos.getY()][x_Pos.getX()]);
 	}
 
 	/////////////////////////
