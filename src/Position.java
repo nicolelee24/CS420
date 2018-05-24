@@ -74,7 +74,7 @@ public class Position implements Comparable<Position>
 			return -1;
 		return 0;
 		*/
-		return this.moveValue - ((Position) other).getMoveValue();
+		return ((Position) other).getMoveValue() - this.moveValue;
 	}
 
 	/////////////////////////

@@ -188,10 +188,11 @@ public class Driver
 			//Move through each valid move
 			for(int i = 0; i < moves.size() && !isTimeUp(); i++)
 			{
+				depth = 0; // reset depth to 0 at the start of each move in moves
 				Position temp = moves.get(i);
 				Position originalCom = new Position(comPos);	//So we can move back properly
 				board.movePiece(comPos, temp, 'x');
-				int v = min(a, b, depth + 1);
+				int v = min(a, b, (depth + 1));
 				//Return the piece back to its original position
 				board.movePieceBack(originalCom, temp, 'x');
 				//Check if this move is better than alpha
@@ -231,7 +232,7 @@ public class Driver
 			Position temp = moves.get(i);
 			Position originalOpp = new Position(oppPos);	//So we can move back properly
 			board.movePiece(oppPos, temp, 'o');
-			minVal = Math.min(minVal, max(a, b, depth + 1));
+			minVal = Math.min(minVal, max(a, b, (depth + 1)));
 			//Return the piece back to its original position
 			board.movePieceBack(originalOpp, temp, 'o');
 			if(minVal <= a)
@@ -255,7 +256,7 @@ public class Driver
 			Position temp = moves.get(i);
 			Position originalCom = new Position(comPos);	//So we can move back properly
 			board.movePiece(comPos, temp, 'x');
-			maxVal = Math.max(maxVal, min(a, b, depth + 1));
+			maxVal = Math.max(maxVal, min(a, b, (depth + 1)));
 			//Return the piece back to its original position
 			board.movePieceBack(originalCom, temp, 'x');
 			if(maxVal >= b)
@@ -265,7 +266,7 @@ public class Driver
 		return maxVal;
 	}
 	
-	private static Position getNewOppPos()
+/*	private static Position getNewOppPos()
 	{
 		String oppMove = "";
 		Position newPos = new Position("");
@@ -281,9 +282,9 @@ public class Driver
 				onBoard = true;
 		}
 		return newPos;
-	}
+	}*/
 	
-/*	private static Position getNewOppPos()
+	private static Position getNewOppPos()
 	{
 		ArrayList<Position> moves = board.generatePossibleMoves(oppPos);
 		moves.sort(null);
@@ -300,8 +301,9 @@ public class Driver
 				break;
 		}
 		newPos = bestMoves.get(rand.nextInt(bestMoves.size()));
+		//Position newPos = moves.get(rand.nextInt(moves.size()));
 		return newPos;
-	}*/
+	}
 	
 	private static boolean isTimeUp() {
 		// stops 1 millisecond before time limit is reached
