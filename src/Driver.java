@@ -92,7 +92,7 @@ public class Driver
 					//Make the move if the move is valid
 					if(board.canMoveTo(comPos, newPos))
 					{
-						board.movePiece(comPos, newPos);	//Make move
+						board.movePiece(comPos, newPos, 'x');	//Make move
 						System.out.println("Computer's move is: " + newPos.toString());
 						comPos = newPos;	//Update the computer's position
 						turn = 'o';	//It's the opponents turn
@@ -120,7 +120,7 @@ public class Driver
 					//Make the move if the move is valid
 					if(board.canMoveTo(oppPos, newPos))
 					{
-						board.movePiece(oppPos, newPos);	//Make move
+						board.movePiece(oppPos, newPos, 'o');	//Make move
 						System.out.println("Move made " + newPos.toString());
 						oppPos = newPos;	//Update the opponent's position
 						turn = 'c';	//It's the computer's turn next
@@ -178,21 +178,20 @@ public class Driver
 		ArrayList<Position> bestMoves = new ArrayList<Position>();
 		max_depth = 1;	//The limit for the depth
 		int depth = 0;	//Our current depth
-		int a = Integer.MIN_VALUE;	//Alpha
-		int b = Integer.MAX_VALUE;	//Beta
-		//Loop just for testing. This will be one spot the time limit will go instead
-		//for(int times = 0; times < 4; times++)
-		while((System.currentTimeMillis() - startTime) < timeLimit)
+		
+		while((System.currentTimeMillis() - startTime) < timeLimit - 1)
 		{
+			int a = Integer.MIN_VALUE;	//Alpha
+			int b = Integer.MAX_VALUE;	//Beta
 			//Move through each valid move
 			for(int i = 0; i < moves.size(); i++)
 			{
 				Position temp = moves.get(i);
 				Position originalCom = new Position(comPos);	//So we can move back properly
-				board.movePiece(comPos, temp);
+				board.movePiece(comPos, temp, 'x');
 				int v = min(a, b, depth + 1);
 				//Return the piece back to its original position
-				board.movePieceBack(originalCom, temp);
+				board.movePieceBack(originalCom, temp, 'x');
 				//Check if this move is better than alpha
 				//If it is better then set a to v and reset bestMoves with this move
 				if(v > a)
@@ -211,6 +210,8 @@ public class Driver
 			}
 			max_depth++;
 		}
+		System.out.println("Depth Reached: " + (max_depth - 1));
+		System.out.println("Time: " + ((System.currentTimeMillis() - startTime) / 1000.0));
 		return bestMoves.get(rand.nextInt(bestMoves.size()));
 	}
 	
@@ -227,10 +228,10 @@ public class Driver
 		{
 			Position temp = moves.get(i);
 			Position originalOpp = new Position(oppPos);	//So we can move back properly
-			board.movePiece(oppPos, temp);
+			board.movePiece(oppPos, temp, 'o');
 			minVal = Math.min(minVal, max(a, b, depth + 1));
 			//Return the piece back to its original position
-			board.movePieceBack(originalOpp, temp);
+			board.movePieceBack(originalOpp, temp, 'o');
 			if(minVal <= a)
 				return minVal;
 			b = Math.min(minVal, b);
@@ -251,17 +252,17 @@ public class Driver
 		{
 			Position temp = moves.get(i);
 			Position originalCom = new Position(comPos);	//So we can move back properly
-			board.movePiece(comPos, temp);
+			board.movePiece(comPos, temp, 'x');
 			maxVal = Math.max(maxVal, min(a, b, depth + 1));
 			//Return the piece back to its original position
-			board.movePieceBack(originalCom, temp);
+			board.movePieceBack(originalCom, temp, 'x');
 			if(maxVal >= b)
 				return maxVal;
 			b = Math.max(maxVal, b);
 		}
 		return maxVal;
 	}
-	
+	/*
 	private static Position getNewOppPos()
 	{
 		String oppMove = "";
@@ -277,6 +278,26 @@ public class Driver
 			else
 				onBoard = true;
 		}
+		return newPos;
+	}
+	*/
+	private static Position getNewOppPos()
+	{
+		ArrayList<Position> moves = board.generatePossibleMoves(oppPos);
+		moves.sort(null);
+		//Get the first element
+		Position newPos = moves.get(0);//moves.get(rand.nextInt(moves.size()));
+		ArrayList<Position> bestMoves = new ArrayList<Position>();
+		bestMoves.add(newPos);
+		for(int i = 0; i < moves.size(); i++)
+		{
+			Position temp = moves.get(i);
+			if(temp.getMoveValue() == newPos.getMoveValue())
+				bestMoves.add(temp);
+			else
+				break;
+		}
+		newPos = bestMoves.get(rand.nextInt(bestMoves.size()));
 		return newPos;
 	}
 }

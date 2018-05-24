@@ -649,20 +649,28 @@ public class Board
 		return true;
 	}
 	
-	public void movePiece(Position oldPos, Position newPos)
+	public void movePiece(Position oldPos, Position newPos, char letter)
 	{
 		//Move piece
 		board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
 		board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
 		updateMoveValues(newPos);
+		if(letter == 'x')
+			x_Pos = new Position(newPos);
+		else
+			o_Pos = new Position(newPos);
 		//printMoveValues();
 	}
 	
-	public void movePieceBack(Position originalPos, Position currentPos)
+	public void movePieceBack(Position originalPos, Position currentPos, char letter)
 	{
 		revertMoveValues(currentPos);
 		board[originalPos.getY()][originalPos.getX()] = board[currentPos.getY()][currentPos.getX()];
 		board[currentPos.getY()][currentPos.getX()] = '-';
+		if(letter == 'x')
+			x_Pos = new Position(originalPos);
+		else
+			o_Pos = new Position(originalPos);
 		//printMoveValues();
 	}
 	
@@ -734,7 +742,6 @@ public class Board
 	
 	public int evaluate()
 	{
-		//return moveValues[o_Pos.getY()][o_Pos.getX()] - 2 * moveValues[x_Pos.getY()][x_Pos.getX()];
 		return moveValues[x_Pos.getY()][x_Pos.getX()] - 2 * moveValues[o_Pos.getY()][o_Pos.getX()];
 	}
 
