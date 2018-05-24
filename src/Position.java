@@ -67,11 +67,14 @@ public class Position implements Comparable<Position>
 	@Override
 	public int compareTo(Position other)
 	{
+		/*
 		if(this.moveValue < other.moveValue)
 			return 1;
 		if(this.moveValue > other.moveValue)
 			return -1;
 		return 0;
+		*/
+		return this.moveValue - ((Position) other).getMoveValue();
 	}
 
 	/////////////////////////

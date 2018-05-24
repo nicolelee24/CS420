@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.Random;
@@ -12,6 +13,7 @@ public class Driver
 	private static ArrayList<String> oppMoves = new ArrayList<String>();	//Keeps track of the opponenet's moves
 	private static Random rand = new Random();
 	private static long timeLimit;
+	private static long startTime; // time at which computer's turn starts
 	private static int max_depth;
 	private static Position comPos;	//Position of the computer
 	private static Position oppPos;	//Position of the opponent
@@ -121,7 +123,7 @@ public class Driver
 					if(board.canMoveTo(oppPos, newPos))
 					{
 						board.movePiece(oppPos, newPos, 'o');	//Make move
-						System.out.println("Move made " + newPos.toString());
+						System.out.println("Opponent's move is: " + newPos.toString());
 						oppPos = newPos;	//Update the opponent's position
 						turn = 'c';	//It's the computer's turn next
 						oppMoves.add(newPos.toString());	//Add the move to the opponent's list of moves
@@ -172,19 +174,19 @@ public class Driver
 	
 	private static Position getNewComPos()
 	{
-		long startTime = System.currentTimeMillis();
+		startTime = System.currentTimeMillis();
 		ArrayList<Position> moves = board.generatePossibleMoves(comPos);
 		moves.sort(null);
 		ArrayList<Position> bestMoves = new ArrayList<Position>();
 		max_depth = 1;	//The limit for the depth
 		int depth = 0;	//Our current depth
 		
-		while((System.currentTimeMillis() - startTime) < timeLimit - 1)
+		while(!isTimeUp())
 		{
 			int a = Integer.MIN_VALUE;	//Alpha
 			int b = Integer.MAX_VALUE;	//Beta
 			//Move through each valid move
-			for(int i = 0; i < moves.size(); i++)
+			for(int i = 0; i < moves.size() && !isTimeUp(); i++)
 			{
 				Position temp = moves.get(i);
 				Position originalCom = new Position(comPos);	//So we can move back properly
@@ -224,7 +226,7 @@ public class Driver
 		if(depth == max_depth)
 			return board.evaluate(false);
 		int minVal = Integer.MAX_VALUE;
-		for(int i = 0; i < moves.size(); i++)
+		for(int i = 0; i < moves.size() && !isTimeUp(); i++)
 		{
 			Position temp = moves.get(i);
 			Position originalOpp = new Position(oppPos);	//So we can move back properly
@@ -248,7 +250,7 @@ public class Driver
 		if(depth == max_depth)
 			return board.evaluate(true);
 		int maxVal = Integer.MIN_VALUE;
-		for(int i = 0; i < moves.size(); i++)
+		for(int i = 0; i < moves.size() && !isTimeUp(); i++)
 		{
 			Position temp = moves.get(i);
 			Position originalCom = new Position(comPos);	//So we can move back properly
@@ -258,11 +260,11 @@ public class Driver
 			board.movePieceBack(originalCom, temp, 'x');
 			if(maxVal >= b)
 				return maxVal;
-			b = Math.max(maxVal, b);
+			a = Math.max(maxVal, a);
 		}
 		return maxVal;
 	}
-	/*
+	
 	private static Position getNewOppPos()
 	{
 		String oppMove = "";
@@ -280,8 +282,8 @@ public class Driver
 		}
 		return newPos;
 	}
-	*/
-	private static Position getNewOppPos()
+	
+/*	private static Position getNewOppPos()
 	{
 		ArrayList<Position> moves = board.generatePossibleMoves(oppPos);
 		moves.sort(null);
@@ -289,7 +291,7 @@ public class Driver
 		Position newPos = moves.get(0);//moves.get(rand.nextInt(moves.size()));
 		ArrayList<Position> bestMoves = new ArrayList<Position>();
 		bestMoves.add(newPos);
-		for(int i = 0; i < moves.size(); i++)
+		for(int i = 1; i < moves.size(); i++)
 		{
 			Position temp = moves.get(i);
 			if(temp.getMoveValue() == newPos.getMoveValue())
@@ -299,5 +301,13 @@ public class Driver
 		}
 		newPos = bestMoves.get(rand.nextInt(bestMoves.size()));
 		return newPos;
+	}*/
+	
+	private static boolean isTimeUp() {
+		// stops 1 millisecond before time limit is reached
+		if ((System.currentTimeMillis() - startTime) > (timeLimit - 2)) {
+			return true;
+		}
+		return false;
 	}
 }
