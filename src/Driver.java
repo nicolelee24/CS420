@@ -95,6 +95,7 @@ public class Driver
 					if(board.canMoveTo(comPos, newPos))
 					{
 						board.movePiece(comPos, newPos, 'x');	//Make move
+						board.setSpacesLeft();
 						System.out.println("Computer's move is: " + newPos.toString());
 						comPos = newPos;	//Update the computer's position
 						turn = 'o';	//It's the opponents turn
@@ -124,6 +125,7 @@ public class Driver
 					if(board.canMoveTo(oppPos, newPos))
 					{
 						board.movePiece(oppPos, newPos, 'o');	//Make move
+						board.setSpacesLeft();
 						System.out.println("Opponent's move is: " + newPos.toString());
 						oppPos = newPos;	//Update the opponent's position
 						turn = 'c';	//It's the computer's turn next
@@ -182,11 +184,12 @@ public class Driver
 		ArrayList<Position> bestMoves = new ArrayList<Position>();
 		max_depth = 1;	//The limit for the depth
 		int depth = 0;	//Our current depth
-		
+
 		while(!isTimeUp())
 		{
 			int a = Integer.MIN_VALUE;	//Alpha
 			int b = Integer.MAX_VALUE;	//Beta
+
 			//Move through each valid move
 			for(int i = 0; i < moves.size() && !isTimeUp(); i++)
 			{
@@ -211,9 +214,11 @@ public class Driver
 				//Prune if alpha is greater than or equal to b
 				if(a >= b)
 					return bestMoves.get(0);
+				
 			}
 			max_depth++;
 		}
+		System.out.println("Spaces Left: " + board.getSpacesLeft());
 		System.out.println("Depth Reached: " + (max_depth - 1));
 		System.out.println("Time: " + ((System.currentTimeMillis() - startTime) / 1000.0));
 		return bestMoves.get(rand.nextInt(bestMoves.size()));
@@ -237,7 +242,7 @@ public class Driver
 			//Return the piece back to its original position
 			board.movePieceBack(originalOpp, temp, 'o');
 			if(minVal <= a)
-				return minVal;
+				break;
 			b = Math.min(minVal, b);
 		}
 		return minVal;
@@ -261,7 +266,7 @@ public class Driver
 			//Return the piece back to its original position
 			board.movePieceBack(originalCom, temp, 'x');
 			if(maxVal >= b)
-				return maxVal;
+				break;
 			a = Math.max(maxVal, a);
 		}
 		return maxVal;

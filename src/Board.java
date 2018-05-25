@@ -7,6 +7,7 @@ public class Board
 	private int[][] moveValues;
 	private Position x_Pos;
 	private Position o_Pos;
+	private int spacesLeft;
 	
 	public Board(Position com, Position opp)
 	{
@@ -20,18 +21,25 @@ public class Board
 		board[x_Pos.getY()][x_Pos.getX()] = 'X';
 		board[o_Pos.getY()][o_Pos.getX()] = 'O';
 		updateMoveValues(null);
+		spacesLeft = 62;
 		//printMoveValues();
 	}
 	
 	//Update the number of moves at each position
 	private void updateMoveValues(Position pos)
 	{
-		if(pos == null)
-			for(int i = 0; i < board.length; i++)
-				for(int j = 0; j < board[i].length; j++)
-						if (board[j][i] == '-')
-							moveValues[j][i] = countMoves(i, j);
-						else moveValues[j][i] = 0;
+		if(pos == null) {
+			for(int i = 0; i < board.length; i++) {
+				for(int j = 0; j < board[i].length; j++) {
+					if (board[j][i] == '-') {
+						moveValues[j][i] = countMoves(i, j);
+					}
+					else {
+						moveValues[j][i] = 0;
+					}
+				}
+			}
+		}
 		else
 		{
 			int counter = 1;
@@ -749,15 +757,70 @@ public class Board
 	
 	public int evaluate(boolean isMax)
 	{
-		if (isMax) // for the max
-			return moveValues[x_Pos.getY()][x_Pos.getX()]; // Open Move Score
-			//return moveValues[x_Pos.getY()][x_Pos.getX()] - (2 * moveValues[o_Pos.getY()][o_Pos.getX()]);
+//		if (isMax) // for the max
+//			//return moveValues[x_Pos.getY()][x_Pos.getX()]; // Open Move Score
+//			return (moveValues[x_Pos.getY()][x_Pos.getX()]) - (moveValues[o_Pos.getY()][o_Pos.getX()]);
+//		
+//		// for the min
+//		//return moveValues[o_Pos.getY()][o_Pos.getX()]; // Open Move Score
+//		return (moveValues[o_Pos.getY()][o_Pos.getX()]) - (moveValues[x_Pos.getY()][x_Pos.getX()]);
 		
-		// for the min
-		return moveValues[o_Pos.getY()][o_Pos.getX()]; // Open Move Score
-		//return moveValues[o_Pos.getY()][o_Pos.getX()] - (2 * moveValues[x_Pos.getY()][x_Pos.getX()]);
+		if (spacesLeft >= 20) { // Aggressive Improved Score for first half of game
+			if (isMax)
+				return (moveValues[x_Pos.getY()][x_Pos.getX()]) - (2 * moveValues[o_Pos.getY()][o_Pos.getX()]);
+			else
+				return (moveValues[o_Pos.getY()][o_Pos.getX()]) - (2 * moveValues[x_Pos.getY()][x_Pos.getX()]);
+		}
+		else { // Longest Path Length for second half of game
+			int	x_length = LongestPathLength(isMax, x_Pos);
+			int	o_length = LongestPathLength(isMax, o_Pos);
+
+			//System.out.println("X Length: " + x_length + " O Length: " + o_length);
+			// possible constant to multiply for aggressiveness?
+			if (isMax) {
+				return (x_length - o_length);
+			}
+			return (o_length - x_length);
+		}
+		
 	}
 
+	// finds the length of the longest path from a given position
+	private int LongestPathLength(boolean isMax, Position pos) {
+		int longest = 0;
+		ArrayList<Position> moves = generatePossibleMoves(pos);
+		
+		for(int i = 0; i < moves.size(); i++)
+		{
+			Position temp = moves.get(i);
+			Position original; // save a copy of the original position
+			if (isMax) {
+				original = new Position(x_Pos);
+				movePiece(x_Pos, temp, 'x');
+				int pathLength = LongestPathLength(isMax,temp) + 1; //get longest path from next position
+				if (pathLength > longest) {
+					longest = pathLength;
+				}
+				//Return the piece back to its original position
+				movePieceBack(original, temp, 'x');
+				if (longest >= 20) break; //just in case, terminate if there's a long enough path
+			}
+			else {
+				original = new Position(o_Pos);
+				movePiece(o_Pos, temp, 'o');
+				int pathLength = LongestPathLength(isMax,temp) + 1; //get longest path from next position
+				if (pathLength > longest) {
+					longest = pathLength;
+				}
+				//Return the piece back to its original position
+				movePieceBack(original, temp, 'o');
+				if (longest >= 20) break; //just in case, terminate if there's a long enough path
+			}
+		}
+		
+		return longest;
+	}
+	
 	/////////////////////////
 	// Getters and Setters //
 	/////////////////////////
@@ -783,5 +846,13 @@ public class Board
 
 	public void setOPos(Position o_Pos) {
 		this.o_Pos = o_Pos;
+	}
+	
+	public int getSpacesLeft() {
+		return spacesLeft;
+	}
+	
+	public void setSpacesLeft() {
+		spacesLeft--;
 	}
 }
