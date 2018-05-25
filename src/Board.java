@@ -29,7 +29,9 @@ public class Board
 		if(pos == null)
 			for(int i = 0; i < board.length; i++)
 				for(int j = 0; j < board[i].length; j++)
-						moveValues[j][i] = countMoves(i, j);
+						if (board[j][i] == '-')
+							moveValues[j][i] = countMoves(i, j);
+						else moveValues[j][i] = 0;
 		else
 		{
 			int counter = 1;
@@ -380,7 +382,7 @@ public class Board
 	}
 	
 	//Print the moveValues array. This was for testing only
-	private void printMoveValues()
+	public void printMoveValues()
 	{
 		System.out.println("\n   1  2  3  4  5  6  7  8");
 		//Print the board and each move so far
@@ -389,7 +391,11 @@ public class Board
 			System.out.print(String.valueOf((char)(i + 65)) + " ");	//Print the row number
 			for(int j = 0; j < moveValues[i].length; j++)
 			{
-				System.out.print(moveValues[i][j] + " ");	//Print the value of the board at the current position
+				if (moveValues[i][j] < 10) {
+					System.out.print(" " + moveValues[i][j] + " ");
+				}
+				else
+					System.out.print(moveValues[i][j] + " ");	//Print the value of the board at the current position
 			}
 			
 			System.out.println("");
@@ -654,7 +660,8 @@ public class Board
 		//Move piece
 		board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
 		board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
-		updateMoveValues(newPos);
+		//updateMoveValues(newPos);
+		updateMoveValues(null);
 		if(letter == 'x')
 			x_Pos = new Position(newPos);
 		else
@@ -743,10 +750,12 @@ public class Board
 	public int evaluate(boolean isMax)
 	{
 		if (isMax) // for the max
-			return moveValues[x_Pos.getY()][x_Pos.getX()] - (2 * moveValues[o_Pos.getY()][o_Pos.getX()]);
+			return moveValues[x_Pos.getY()][x_Pos.getX()]; // Open Move Score
+			//return moveValues[x_Pos.getY()][x_Pos.getX()] - (2 * moveValues[o_Pos.getY()][o_Pos.getX()]);
 		
 		// for the min
-		return moveValues[o_Pos.getY()][o_Pos.getX()] - (2 * moveValues[x_Pos.getY()][x_Pos.getX()]);
+		return moveValues[o_Pos.getY()][o_Pos.getX()]; // Open Move Score
+		//return moveValues[o_Pos.getY()][o_Pos.getX()] - (2 * moveValues[x_Pos.getY()][x_Pos.getX()]);
 	}
 
 	/////////////////////////

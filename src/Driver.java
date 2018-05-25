@@ -105,6 +105,7 @@ public class Driver
 						System.out.println("Move not made " + newPos.toString());
 					}
 					board.print(comMoves, oppMoves);
+					board.printMoveValues();
 				}
 				//The computer has no valid moves so the opponent wins
 				else
@@ -133,6 +134,7 @@ public class Driver
 						System.out.println("Move not made " + newPos.toString());
 					}
 					board.print(comMoves, oppMoves);
+					board.printMoveValues();
 				}
 				//The opponent has no valid moves so the computer wins
 				else
@@ -188,7 +190,6 @@ public class Driver
 			//Move through each valid move
 			for(int i = 0; i < moves.size() && !isTimeUp(); i++)
 			{
-				depth = 0; // reset depth to 0 at the start of each move in moves
 				Position temp = moves.get(i);
 				Position originalCom = new Position(comPos);	//So we can move back properly
 				board.movePiece(comPos, temp, 'x');
@@ -266,23 +267,23 @@ public class Driver
 		return maxVal;
 	}
 	
-/*	private static Position getNewOppPos()
-	{
-		String oppMove = "";
-		Position newPos = new Position("");
-		boolean onBoard = false;	//Flag to indicate if user's response is on the board
-		while(!onBoard)
-		{
-			System.out.print("Enter opponent's move: ");
-			oppMove = keyboard.nextLine();
-			newPos = new Position(oppMove);
-			if(newPos.getX() < 0 || newPos.getX() > 7 || newPos.getY() < 0 || newPos.getY() > 7)
-				onBoard = false;
-			else
-				onBoard = true;
-		}
-		return newPos;
-	}*/
+//	private static Position getNewOppPos()
+//	{
+//		String oppMove = "";
+//		Position newPos = new Position("");
+//		boolean onBoard = false;	//Flag to indicate if user's response is on the board
+//		while(!onBoard)
+//		{
+//			System.out.print("Enter opponent's move: ");
+//			oppMove = keyboard.nextLine();
+//			newPos = new Position(oppMove);
+//			if(newPos.getX() < 0 || newPos.getX() > 7 || newPos.getY() < 0 || newPos.getY() > 7)
+//				onBoard = false;
+//			else
+//				onBoard = true;
+//		}
+//		return newPos;
+//	}
 	
 	private static Position getNewOppPos()
 	{
