@@ -818,7 +818,7 @@ public class Board
 			return Integer.MIN_VALUE; // not sure if its supposed to be min or max value
 		}
 		
-		// Aggressive Improved Score for first half of game
+		// Super Aggressive Improved Score for first half of game
 		if (spacesLeft >= 30) { 
 			return (moveValues[x_Pos.getY()][x_Pos.getX()]) - (3 * moveValues[o_Pos.getY()][o_Pos.getX()]);
 		}
