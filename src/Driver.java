@@ -180,9 +180,13 @@ public class Driver
 	{
 		startTime = System.currentTimeMillis();
 		ArrayList<Position> moves = board.generatePossibleMoves(comPos);
+		//Three is only one move for the computer so make this move
+		if(moves.size() == 1)
+			return moves.get(0);
 		moves.sort(null);
 		ArrayList<Position> bestMoves = new ArrayList<Position>();
 		max_depth = 1;	//The limit for the depth
+		Position bestLastDepth = moves.get(0);
 		int depth = 0;	//Our current depth
 
 		while(!isTimeUp())
@@ -216,12 +220,13 @@ public class Driver
 					return bestMoves.get(0);
 				
 			}
+			bestLastDepth = bestMoves.get(0);
 			max_depth++;
 		}
 		System.out.println("Spaces Left: " + board.getSpacesLeft());
 		System.out.println("Depth Reached: " + (max_depth - 1));
 		System.out.println("Time: " + ((System.currentTimeMillis() - startTime) / 1000.0));
-		return bestMoves.get(rand.nextInt(bestMoves.size()));
+		return bestLastDepth;
 	}
 	
 	//Min function
@@ -272,44 +277,44 @@ public class Driver
 		return maxVal;
 	}
 	
-	private static Position getNewOppPos()
-	{
-		String oppMove = "";
-		Position newPos = new Position("");
-		boolean onBoard = false;	//Flag to indicate if user's response is on the board
-		while(!onBoard)
-		{
-			System.out.print("Enter opponent's move: ");
-			oppMove = keyboard.nextLine();
-			newPos = new Position(oppMove);
-			if(newPos.getX() < 0 || newPos.getX() > 7 || newPos.getY() < 0 || newPos.getY() > 7)
-				onBoard = false;
-			else
-				onBoard = true;
-		}
-		return newPos;
-	}
-	
 //	private static Position getNewOppPos()
 //	{
-//		ArrayList<Position> moves = board.generatePossibleMoves(oppPos);
-//		moves.sort(null);
-//		//Get the first element
-//		Position newPos = moves.get(0);//moves.get(rand.nextInt(moves.size()));
-//		ArrayList<Position> bestMoves = new ArrayList<Position>();
-//		bestMoves.add(newPos);
-//		for(int i = 1; i < moves.size(); i++)
+//		String oppMove = "";
+//		Position newPos = new Position("");
+//		boolean onBoard = false;	//Flag to indicate if user's response is on the board
+//		while(!onBoard)
 //		{
-//			Position temp = moves.get(i);
-//			if(temp.getMoveValue() == newPos.getMoveValue())
-//				bestMoves.add(temp);
+//			System.out.print("Enter opponent's move: ");
+//			oppMove = keyboard.nextLine();
+//			newPos = new Position(oppMove);
+//			if(newPos.getX() < 0 || newPos.getX() > 7 || newPos.getY() < 0 || newPos.getY() > 7)
+//				onBoard = false;
 //			else
-//				break;
+//				onBoard = true;
 //		}
-//		newPos = bestMoves.get(rand.nextInt(bestMoves.size()));
-//		//Position newPos = moves.get(rand.nextInt(moves.size()));
 //		return newPos;
 //	}
+	
+	private static Position getNewOppPos()
+	{
+		ArrayList<Position> moves = board.generatePossibleMoves(oppPos);
+		moves.sort(null);
+		//Get the first element
+		Position newPos = moves.get(0);//moves.get(rand.nextInt(moves.size()));
+		ArrayList<Position> bestMoves = new ArrayList<Position>();
+		bestMoves.add(newPos);
+		for(int i = 1; i < moves.size(); i++)
+		{
+			Position temp = moves.get(i);
+			if(temp.getMoveValue() == newPos.getMoveValue())
+				bestMoves.add(temp);
+			else
+				break;
+		}
+		newPos = bestMoves.get(rand.nextInt(bestMoves.size()));
+		//Position newPos = moves.get(rand.nextInt(moves.size()));
+		return newPos;
+	}
 	
 	private static boolean isTimeUp() {
 		// stops 1 millisecond before time limit is reached

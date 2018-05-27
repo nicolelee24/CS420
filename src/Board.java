@@ -34,9 +34,9 @@ public class Board
 					if (board[j][i] != '#') {
 						moveValues[j][i] = countMoves(i, j);
 					}
-					else {
-						moveValues[j][i] = 0;
-					}
+//					else {
+//						moveValues[j][i] = 0;
+//					}
 				}
 			}
 		}
@@ -669,11 +669,12 @@ public class Board
 		board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
 		board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
 		//updateMoveValues(newPos);
-		updateMoveValues(null);
+		updateMoveValues(newPos);
 		if(letter == 'x')
 			x_Pos = new Position(newPos);
 		else
 			o_Pos = new Position(newPos);
+		//spacesLeft--;
 		//printMoveValues();
 	}
 	
@@ -686,6 +687,7 @@ public class Board
 			x_Pos = new Position(originalPos);
 		else
 			o_Pos = new Position(originalPos);
+		//spacesLeft++;
 		//printMoveValues();
 	}
 	
@@ -764,8 +766,8 @@ public class Board
 //		// for the min
 //		//return moveValues[o_Pos.getY()][o_Pos.getX()]; // Open Move Score
 //		return (moveValues[o_Pos.getY()][o_Pos.getX()]) - (moveValues[x_Pos.getY()][x_Pos.getX()]);
-		
-		if (spacesLeft >= 42) { // Aggressive Improved Score for first half of game
+		//return (moveValues[x_Pos.getY()][x_Pos.getX()]);
+		if (spacesLeft >= 30) { // Aggressive Improved Score for first half of game
 			//if (isMax)
 				return (moveValues[x_Pos.getY()][x_Pos.getX()]) - (2 * moveValues[o_Pos.getY()][o_Pos.getX()]);
 			//else
@@ -803,7 +805,7 @@ public class Board
 				}
 				//Return the piece back to its original position
 				movePieceBack(original, temp, 'x');
-				if (longest >= 15) break; //just in case, terminate if there's a long enough path
+				if (longest >= 20) break; //just in case, terminate if there's a long enough path
 			}
 			else {
 				original = new Position(o_Pos);
@@ -814,7 +816,7 @@ public class Board
 				}
 				//Return the piece back to its original position
 				movePieceBack(original, temp, 'o');
-				if (longest >= 15) break; //just in case, terminate if there's a long enough path
+				if (longest >= 20) break; //just in case, terminate if there's a long enough path
 			}
 		}
 		
