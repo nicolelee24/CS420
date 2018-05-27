@@ -22,7 +22,6 @@ public class Board
 		board[o_Pos.getY()][o_Pos.getX()] = 'O';
 		updateMoveValues(null);
 		spacesLeft = 62;
-		//printMoveValues();
 	}
 	
 	//Update the number of moves at each position
@@ -663,50 +662,88 @@ public class Board
 		return true;
 	}
 	
-	public void movePiece(Position oldPos, Position newPos, char letter)
+	public Position movePiece(Position oldPos, Position newPos, char letter)
 	{
 		//Move piece
 		board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
 		board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
 		//updateMoveValues(newPos);
 		updateMoveValues(newPos);
-		if(letter == 'x')
+		if(letter == 'x') {
 			x_Pos = new Position(newPos);
-		else
+			return x_Pos;
+		}
+		else {
 			o_Pos = new Position(newPos);
-		//spacesLeft--;
-		//printMoveValues();
+			return o_Pos;
+		}
 	}
 	
-	public void movePieceBack(Position originalPos, Position currentPos, char letter)
+	public Position movePieceBack(Position originalPos, Position currentPos, char letter)
 	{
 		revertMoveValues(currentPos);
 		board[originalPos.getY()][originalPos.getX()] = board[currentPos.getY()][currentPos.getX()];
 		board[currentPos.getY()][currentPos.getX()] = '-';
-		if(letter == 'x')
+		if(letter == 'x') {
 			x_Pos = new Position(originalPos);
-		else
+			return x_Pos;
+		}
+		else {
 			o_Pos = new Position(originalPos);
-		//spacesLeft++;
-		//printMoveValues();
+			return o_Pos;
+		}
 	}
 	
 	// Function to make sure the player can make a move
 	public boolean canMove(Position pos)
 	{
-		for(int y = pos.getY() - 1; y <= pos.getY() + 1; y++)
-		{
-			for(int x = pos.getX() - 1; x <= pos.getX() + 1; x++)
-			{
-				try
-				{
-					if(board[y][x] == '-')
-						return true;
-				}catch(Exception e)
-				{}
-			}
+//		for(int y = pos.getY() - 1; y <= pos.getY() + 1; y++)
+//		{
+//			for(int x = pos.getX() - 1; x <= pos.getX() + 1; x++)
+//			{
+//				try
+//				{
+//					if(board[y][x] == '-')
+//						return true;
+//				}catch(Exception e)
+//				{}
+//			}
+//		}
+//		return false;
+		
+		if (pos.getY() - 1 > -1 && board[pos.getY() - 1][pos.getX()] == '-') {
+			return true; // player can move up
 		}
-		return false;
+		
+		if (pos.getY() + 1 < 8 && board[pos.getY() + 1][pos.getX()] == '-') {
+			return true; // player can move down
+		}
+		
+		if (pos.getX() - 1 > -1 && board[pos.getY()][pos.getX() - 1] == '-') {
+			return true; // player can move left
+		}
+		
+		if (pos.getX() + 1 < 8 && board[pos.getY()][pos.getX() + 1] == '-') {
+			return true; // player can move right
+		}
+		
+		if (pos.getX() - 1 > -1 && pos.getY() - 1 > -1 && board[pos.getY() - 1][pos.getX() - 1] == '-') {
+			return true; // player can move up/left diagonal
+		}
+
+		if (pos.getX() + 1 < 8 && pos.getY() - 1 > -1 && board[pos.getY() - 1][pos.getX() + 1] == '-') {
+			return true; // player can move up/right diagonal
+		}
+
+		if (pos.getX() - 1 > -1 && pos.getY() + 1 < 8 && board[pos.getY() + 1][pos.getX() - 1] == '-') {
+			return true; // player can move down/left diagonal
+		}
+		
+		if (pos.getX() + 1 < 8 && pos.getY() + 1 < 8 && board[pos.getY() + 1][pos.getX() + 1] == '-') {
+			return true; // player can move down/right diagonal
+		}
+		
+		return false; // no move can be made
 	}
 	
 	public void print(ArrayList<String> comMoves, ArrayList<String> oppMoves)
@@ -758,31 +795,37 @@ public class Board
 	}
 	
 	public int evaluate(boolean isMax)
-	{
-//		if (isMax) // for the max
-//			//return moveValues[x_Pos.getY()][x_Pos.getX()]; // Open Move Score
-//			return (moveValues[x_Pos.getY()][x_Pos.getX()]) - (moveValues[o_Pos.getY()][o_Pos.getX()]);
-//		
-//		// for the min
-//		//return moveValues[o_Pos.getY()][o_Pos.getX()]; // Open Move Score
-//		return (moveValues[o_Pos.getY()][o_Pos.getX()]) - (moveValues[x_Pos.getY()][x_Pos.getX()]);
-		//return (moveValues[x_Pos.getY()][x_Pos.getX()]);
-		if (spacesLeft >= 30) { // Aggressive Improved Score for first half of game
-			//if (isMax)
-				return (moveValues[x_Pos.getY()][x_Pos.getX()]) - (2 * moveValues[o_Pos.getY()][o_Pos.getX()]);
-			//else
-				//return (moveValues[o_Pos.getY()][o_Pos.getX()]) - (2 * moveValues[x_Pos.getY()][x_Pos.getX()]);
+	{	
+		boolean oMove = canMove(o_Pos);
+		boolean xMove = canMove(x_Pos);
+		
+		// opponent can't make a move and computer can
+		if (!oMove && xMove) { 
+			return Integer.MAX_VALUE;
+		}
+		
+		// opponent can make a move and computer can't
+		if (oMove && !xMove) {
+			return Integer.MIN_VALUE;
+		}
+		
+		// should we consider the fact if no one can move, then the one that "moves" next loses?
+		if (!oMove && !xMove && isMax) {
+			return Integer.MAX_VALUE; // not sure if its supposed to be min or max value
+		}
+		
+		if (!oMove && !xMove && !isMax) {
+			return Integer.MIN_VALUE; // not sure if its supposed to be min or max value
+		}
+		
+		// Aggressive Improved Score for first half of game
+		if (spacesLeft >= 30) { 
+			return (moveValues[x_Pos.getY()][x_Pos.getX()]) - (3 * moveValues[o_Pos.getY()][o_Pos.getX()]);
 		}
 		else { // Longest Path Length for second half of game
-			int	x_length = LongestPathLength(isMax, x_Pos);
-			int	o_length = LongestPathLength(isMax, o_Pos);
-
-			//System.out.println("X Length: " + x_length + " O Length: " + o_length);
-			// possible constant to multiply for aggressiveness?
-			//if (isMax) {
-				return (x_length - o_length);
-			//}
-			//return (o_length - x_length);
+			int	x_length = LongestPathLength(true, x_Pos);
+			int	o_length = LongestPathLength(false, o_Pos);
+			return (x_length - o_length);
 		}
 		
 	}
@@ -791,7 +834,7 @@ public class Board
 	private int LongestPathLength(boolean isMax, Position pos) {
 		int longest = 0;
 		ArrayList<Position> moves = generatePossibleMoves(pos);
-		
+		moves.sort(null);
 		for(int i = 0; i < moves.size(); i++)
 		{
 			Position temp = moves.get(i);

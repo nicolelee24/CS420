@@ -75,8 +75,7 @@ public class Driver
 		
 		///////////////////////////////////////////////////////
 		//
-		//	This was for testing the movement function
-		//	This would be where I intended the game loop to go
+		//	Start of Game!
 		//
 		///////////////////////////////////////////////////////
 		
@@ -199,10 +198,10 @@ public class Driver
 			{
 				Position temp = moves.get(i);
 				Position originalCom = new Position(comPos);	//So we can move back properly
-				board.movePiece(comPos, temp, 'x');
+				comPos = board.movePiece(comPos, temp, 'x');
 				int v = min(a, b, (depth + 1));
 				//Return the piece back to its original position
-				board.movePieceBack(originalCom, temp, 'x');
+				comPos = board.movePieceBack(originalCom, temp, 'x');
 				//Check if this move is better than alpha
 				//If it is better then set a to v and reset bestMoves with this move
 				if(v > a)
@@ -212,15 +211,16 @@ public class Driver
 					bestMoves.add(temp);
 				}
 				//If v equals a then add this move to the list of bestMoves
-//				else if(v == a)
-//					bestMoves.add(temp);
+				else if(v == a)
+					bestMoves.add(temp);
 				
 				//Prune if alpha is greater than or equal to b
 				if(a >= b)
 					return bestMoves.get(0);
 				
 			}
-			bestLastDepth = bestMoves.get(0);
+			//bestLastDepth = bestMoves.get(0); TODO: This is where I got the exception w/ lines 215/6 commented out
+			bestLastDepth = bestMoves.get(rand.nextInt(bestMoves.size()));
 			max_depth++;
 		}
 		System.out.println("Spaces Left: " + board.getSpacesLeft());
@@ -242,10 +242,10 @@ public class Driver
 		{
 			Position temp = moves.get(i);
 			Position originalOpp = new Position(oppPos);	//So we can move back properly
-			board.movePiece(oppPos, temp, 'o');
+			oppPos = board.movePiece(oppPos, temp, 'o');
 			minVal = Math.min(minVal, max(a, b, (depth + 1)));
 			//Return the piece back to its original position
-			board.movePieceBack(originalOpp, temp, 'o');
+			oppPos = board.movePieceBack(originalOpp, temp, 'o');
 			if(minVal <= a)
 				break;
 			b = Math.min(minVal, b);
@@ -266,10 +266,10 @@ public class Driver
 		{
 			Position temp = moves.get(i);
 			Position originalCom = new Position(comPos);	//So we can move back properly
-			board.movePiece(comPos, temp, 'x');
+			comPos = board.movePiece(comPos, temp, 'x');
 			maxVal = Math.max(maxVal, min(a, b, (depth + 1)));
 			//Return the piece back to its original position
-			board.movePieceBack(originalCom, temp, 'x');
+			comPos = board.movePieceBack(originalCom, temp, 'x');
 			if(maxVal >= b)
 				break;
 			a = Math.max(maxVal, a);
