@@ -1,7 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -105,7 +102,6 @@ public class Driver
 						System.out.println("Move not made " + newPos.toString());
 					}
 					board.print(comMoves, oppMoves);
-					//board.printMoveValues();
 				}
 				//The computer has no valid moves so the opponent wins
 				else
@@ -135,7 +131,6 @@ public class Driver
 						System.out.println("Move not made " + newPos.toString());
 					}
 					board.print(comMoves, oppMoves);
-					//board.printMoveValues();
 				}
 				//The opponent has no valid moves so the computer wins
 				else
@@ -154,32 +149,11 @@ public class Driver
 		keyboard.close();
 	}
 	
-//	// Computer gets to make a random move
-//	private static Position getNewComPos(Position comPos)
-//	{
-//		ArrayList<Position> moves = board.generatePossibleMoves(comPos);
-//		moves.sort(null);
-//		//Get the first element
-//		Position newPos = moves.get(0);//moves.get(rand.nextInt(moves.size()));
-//		ArrayList<Position> bestMoves = new ArrayList<Position>();
-//		bestMoves.add(newPos);
-//		for(int i = 0; i < moves.size(); i++)
-//		{
-//			Position temp = moves.get(i);
-//			if(temp.getMoveValue() == newPos.getMoveValue())
-//				bestMoves.add(temp);
-//			else
-//				break;
-//		}
-//		newPos = bestMoves.get(rand.nextInt(bestMoves.size()));
-//		return newPos;
-//	}
-	
 	private static Position getNewComPos()
 	{
 		startTime = System.currentTimeMillis();
 		ArrayList<Position> moves = board.generatePossibleMoves(comPos);
-		//Three is only one move for the computer so make this move
+		//There is only one move for the computer so make this move
 		if(moves.size() == 1)
 			return moves.get(0);
 		moves.sort(null);
@@ -312,12 +286,11 @@ public class Driver
 				break;
 		}
 		newPos = bestMoves.get(rand.nextInt(bestMoves.size()));
-		//Position newPos = moves.get(rand.nextInt(moves.size()));
 		return newPos;
 	}
 	
 	private static boolean isTimeUp() {
-		// stops 1 millisecond before time limit is reached
+		// stops ~1 millisecond before time limit is reached
 		if ((System.currentTimeMillis() - startTime) > (timeLimit - 2)) {
 			return true;
 		}

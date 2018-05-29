@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.PriorityQueue;
 
 public class Board
 {
@@ -21,7 +20,7 @@ public class Board
 		board[x_Pos.getY()][x_Pos.getX()] = 'X';
 		board[o_Pos.getY()][o_Pos.getX()] = 'O';
 		updateMoveValues(null);
-		spacesLeft = 62;
+		spacesLeft = 62; // Initialize spaces left
 	}
 	
 	//Update the number of moves at each position
@@ -667,7 +666,6 @@ public class Board
 		//Move piece
 		board[newPos.getY()][newPos.getX()] = board[oldPos.getY()][oldPos.getX()];
 		board[oldPos.getY()][oldPos.getX()] = '#';	//Mark old spot as moved
-		//updateMoveValues(newPos);
 		updateMoveValues(newPos);
 		if(letter == 'x') {
 			x_Pos = new Position(newPos);
@@ -697,20 +695,6 @@ public class Board
 	// Function to make sure the player can make a move
 	public boolean canMove(Position pos)
 	{
-//		for(int y = pos.getY() - 1; y <= pos.getY() + 1; y++)
-//		{
-//			for(int x = pos.getX() - 1; x <= pos.getX() + 1; x++)
-//			{
-//				try
-//				{
-//					if(board[y][x] == '-')
-//						return true;
-//				}catch(Exception e)
-//				{}
-//			}
-//		}
-//		return false;
-		
 		if (pos.getY() - 1 > -1 && board[pos.getY() - 1][pos.getX()] == '-') {
 			return true; // player can move up
 		}
@@ -811,11 +795,11 @@ public class Board
 		
 		// should we consider the fact if no one can move, then the one that "moves" next loses?
 		if (!oMove && !xMove && isMax) {
-			return Integer.MAX_VALUE; // not sure if its supposed to be min or max value
+			return Integer.MIN_VALUE; // not sure if its supposed to be min or max value
 		}
 		
 		if (!oMove && !xMove && !isMax) {
-			return Integer.MIN_VALUE; // not sure if its supposed to be min or max value
+			return Integer.MAX_VALUE; // not sure if its supposed to be min or max value
 		}
 		
 		// Super Aggressive Improved Score for first half of game
@@ -825,7 +809,7 @@ public class Board
 		else { // Longest Path Length for second half of game
 			int	x_length = LongestPathLength(true, x_Pos);
 			int	o_length = LongestPathLength(false, o_Pos);
-			return (x_length - o_length);
+			return (x_length - (2 * o_length));
 		}
 		
 	}
