@@ -799,6 +799,17 @@ public class Board
 			return Integer.MAX_VALUE;
 		}
 		
+		// computer can't move
+		if (!xMove) {
+			return Integer.MIN_VALUE;
+		}
+		
+		// opponent can't move
+		if (!oMove) {
+			return Integer.MAX_VALUE;
+		}
+		
+		// both players can make a move, compute heuristics
 		// Super Aggressive Improved Score for first half of game
 		if (spacesLeft >= 30) { 
 			return (moveValues[x_Pos.getY()][x_Pos.getX()]) - (3 * moveValues[o_Pos.getY()][o_Pos.getX()]);
