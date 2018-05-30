@@ -32,9 +32,6 @@ public class Board
 					if (board[j][i] != '#') {
 						moveValues[j][i] = countMoves(i, j);
 					}
-//					else {
-//						moveValues[j][i] = 0;
-//					}
 				}
 			}
 		}
@@ -793,13 +790,13 @@ public class Board
 			return Integer.MIN_VALUE;
 		}
 		
-		// should we consider the fact if no one can move, then the one that "moves" next loses?
+		// no one can move, then the one that "moves" next loses
 		if (!oMove && !xMove && isMax) {
-			return Integer.MIN_VALUE; // not sure if its supposed to be min or max value
+			return Integer.MIN_VALUE; 
 		}
 		
 		if (!oMove && !xMove && !isMax) {
-			return Integer.MAX_VALUE; // not sure if its supposed to be min or max value
+			return Integer.MAX_VALUE;
 		}
 		
 		// Super Aggressive Improved Score for first half of game
@@ -809,12 +806,12 @@ public class Board
 		else { // Longest Path Length for second half of game
 			int	x_length = LongestPathLength(true, x_Pos);
 			int	o_length = LongestPathLength(false, o_Pos);
-			return (x_length - (2 * o_length));
+			return (x_length - o_length);
 		}
 		
 	}
 
-	// finds the length of the longest path from a given position
+	// Finds the length of the longest path from a given position
 	private int LongestPathLength(boolean isMax, Position pos) {
 		int longest = 0;
 		ArrayList<Position> moves = generatePossibleMoves(pos);

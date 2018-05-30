@@ -72,7 +72,7 @@ public class Driver
 		
 		///////////////////////////////////////////////////////
 		//
-		//	Start of Game!
+		//	Start of Game! Let's play ISOLATION!
 		//
 		///////////////////////////////////////////////////////
 		
@@ -193,11 +193,9 @@ public class Driver
 					return bestMoves.get(0);
 				
 			}
-			//bestLastDepth = bestMoves.get(0); TODO: This is where I got the exception w/ lines 215/6 commented out
 			bestLastDepth = bestMoves.get(rand.nextInt(bestMoves.size()));
 			max_depth++;
 		}
-		System.out.println("Spaces Left: " + board.getSpacesLeft());
 		System.out.println("Depth Reached: " + (max_depth - 1));
 		System.out.println("Time: " + ((System.currentTimeMillis() - startTime) / 1000.0));
 		return bestLastDepth;
@@ -251,43 +249,45 @@ public class Driver
 		return maxVal;
 	}
 	
-//	private static Position getNewOppPos()
-//	{
-//		String oppMove = "";
-//		Position newPos = new Position("");
-//		boolean onBoard = false;	//Flag to indicate if user's response is on the board
-//		while(!onBoard)
-//		{
-//			System.out.print("Enter opponent's move: ");
-//			oppMove = keyboard.nextLine();
-//			newPos = new Position(oppMove);
-//			if(newPos.getX() < 0 || newPos.getX() > 7 || newPos.getY() < 0 || newPos.getY() > 7)
-//				onBoard = false;
-//			else
-//				onBoard = true;
-//		}
-//		return newPos;
-//	}
-	
+	// Opponent/User inputs position
 	private static Position getNewOppPos()
 	{
-		ArrayList<Position> moves = board.generatePossibleMoves(oppPos);
-		moves.sort(null);
-		//Get the first element
-		Position newPos = moves.get(0);//moves.get(rand.nextInt(moves.size()));
-		ArrayList<Position> bestMoves = new ArrayList<Position>();
-		bestMoves.add(newPos);
-		for(int i = 1; i < moves.size(); i++)
+		String oppMove = "";
+		Position newPos = new Position("");
+		boolean onBoard = false;	//Flag to indicate if user's response is on the board
+		while(!onBoard)
 		{
-			Position temp = moves.get(i);
-			if(temp.getMoveValue() == newPos.getMoveValue())
-				bestMoves.add(temp);
+			System.out.print("Enter opponent's move: ");
+			oppMove = keyboard.nextLine();
+			newPos = new Position(oppMove);
+			if(newPos.getX() < 0 || newPos.getX() > 7 || newPos.getY() < 0 || newPos.getY() > 7)
+				onBoard = false;
 			else
-				break;
+				onBoard = true;
 		}
-		newPos = bestMoves.get(rand.nextInt(bestMoves.size()));
 		return newPos;
 	}
+	
+	// Automated opponent: move to a random position based on number of available moves
+//	private static Position getNewOppPos()
+//	{
+//		ArrayList<Position> moves = board.generatePossibleMoves(oppPos);
+//		moves.sort(null);
+//		//Get the first element
+//		Position newPos = moves.get(0);//moves.get(rand.nextInt(moves.size()));
+//		ArrayList<Position> bestMoves = new ArrayList<Position>();
+//		bestMoves.add(newPos);
+//		for(int i = 1; i < moves.size(); i++)
+//		{
+//			Position temp = moves.get(i);
+//			if(temp.getMoveValue() == newPos.getMoveValue())
+//				bestMoves.add(temp);
+//			else
+//				break;
+//		}
+//		newPos = bestMoves.get(rand.nextInt(bestMoves.size()));
+//		return newPos;
+//	}
 	
 	private static boolean isTimeUp() {
 		// stops ~1 millisecond before time limit is reached
